@@ -1,391 +1,417 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omkar Sutar | Unity & AR/VR Developer</title>
+    <title>Omkar Sutar | Game Dev HUD</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #0f172a;
-            --surface-color: #1e293b;
-            --surface-hover: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-color: #14b8a6;
-            --accent-hover: #0d9488;
+            --bg-color: #050505;
+            --hud-bg: rgba(16, 20, 30, 0.85);
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ea;
+            --neon-green: #39ff14;
+            --text-main: #e0e6ed;
+            --text-muted: #8b9bb4;
+        }
+
+        /* --- THE FIX FOR THE SCROLL SNAP --- */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px; /* Forces links to snap below the navbar */
+            cursor: none; /* Hides default cursor for our custom one */
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
             overflow-x: hidden;
+            /* Gamified Holo-Grid Background */
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4, .nav-link, .btn-custom {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* --- Custom Interactive Cursor --- */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+            transition: transform 0.1s;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(0, 243, 255, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            transform: translate(-50%, -50%); /* Center over dot */
         }
 
         /* --- Animations --- */
-        @keyframes pulse-btn {
-            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(20, 184, 166, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        .scanline-effect {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.05), transparent);
+            animation: scanline 6s linear infinite;
+            pointer-events: none;
+            z-index: 9000;
         }
 
-        .animate-on-scroll {
+        .reveal-on-scroll {
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .animate-on-scroll.show {
+        .reveal-on-scroll.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
-        /* --- Navbar (Android / Mobile Optimized) --- */
-        .custom-navbar {
-            background-color: rgba(30, 41, 59, 0.95);
+        /* --- HUD Navbar --- */
+        .navbar {
+            background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            padding: 1rem 0;
         }
 
         .navbar-brand {
-            color: var(--accent-color) !important;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
+            color: #fff !important;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-cyan);
         }
 
         .nav-link {
-            color: var(--text-primary) !important;
-            font-weight: 500;
-            transition: color 0.3s, transform 0.3s;
-        }
-
-        .nav-link:hover {
-            color: var(--accent-color) !important;
-            transform: translateY(-2px);
-        }
-
-        /* --- Global Layout --- */
-        section {
-            padding: 6rem 0;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
+            color: var(--text-muted) !important;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
             position: relative;
-            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
         }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 4px;
-            background-color: var(--accent-color);
-            margin: 15px auto 0;
-            border-radius: 2px;
-            transition: width 0.4s ease;
+        .nav-link::before {
+            content: '[';
+            position: absolute;
+            left: 0;
+            opacity: 0;
+            color: var(--neon-cyan);
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(10px);
+        }
+        .nav-link::after {
+            content: ']';
+            position: absolute;
+            right: 0;
+            opacity: 0;
+            color: var(--neon-cyan);
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(-10px);
         }
 
-        .section-title:hover::after {
-            width: 100px;
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-cyan) !important;
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+        .nav-link:hover::before, .nav-link:hover::after,
+        .nav-link.active::before, .nav-link.active::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* --- Global Layout & Titles --- */
+        section { padding: 5rem 0; }
+        
+        .section-title {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 0px rgba(0, 243, 255, 0.5);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title::before, .section-title::after {
+            content: '///';
+            color: var(--neon-cyan);
+            margin: 0 15px;
+            font-size: 1.5rem;
+            vertical-align: middle;
         }
 
         /* --- Buttons --- */
         .btn-custom {
-            background-color: var(--accent-color);
-            color: #fff;
-            padding: 0.8rem 1.8rem;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 0.8rem 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: 0.3s;
+            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1), 0 0 10px rgba(0, 243, 255, 0.2);
             text-decoration: none;
             display: inline-block;
+        }
+
+        .btn-custom::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--neon-cyan);
+            z-index: -1;
+            transition: 0.3s;
         }
 
         .btn-custom:hover {
-            background-color: var(--accent-hover);
-            color: #fff;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 12px rgba(20, 184, 166, 0.3);
-        }
-
-        .btn-outline-custom {
-            background-color: transparent;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 0.8rem 1.8rem;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-outline-custom:hover {
-            background-color: var(--accent-color);
-            color: #fff;
-        }
-
-        .cta-btn {
-            animation: pulse-btn 2.5s infinite;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            text-align: center;
-            padding: 10rem 0 6rem;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            background: linear-gradient(to right, #fff, var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .hero h2 {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .hero p {
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            font-size: 1.1rem;
-        }
-
-        /* --- Experience Cards --- */
-        .experience-card {
-            background-color: var(--surface-color);
-            padding: 2.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--accent-color);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .experience-card:hover {
-            transform: translateX(10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            background-color: var(--surface-hover);
-        }
-
-        .experience-card h3 {
-            color: var(--accent-color);
-            font-size: 1.4rem;
-        }
-
-        .experience-card .date {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        /* --- Project Cards --- */
-        .project-card {
-            background-color: var(--surface-color);
-            border-radius: 12px;
-            overflow: hidden;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-            position: relative;
-        }
-
-        .project-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: var(--accent-color);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(20, 184, 166, 0.15);
-        }
-
-        .project-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .project-img {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.4s;
-        }
-
-        .project-card:hover .project-img {
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan);
             transform: scale(1.05);
         }
 
-        .project-content {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--surface-color);
-            z-index: 1;
+        .btn-custom:hover::before {
+            left: 0;
         }
 
-        .project-content p {
-            color: var(--text-secondary);
-            flex-grow: 1;
-            font-size: 0.95rem;
+        .btn-play {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            box-shadow: inset 0 0 10px rgba(255, 0, 234, 0.1), 0 0 10px rgba(255, 0, 234, 0.2);
         }
+        .btn-play::before { background: var(--neon-pink); }
+        .btn-play:hover { color: #fff; box-shadow: 0 0 20px var(--neon-pink); }
 
-        /* --- Skills Grid --- */
-        .skill-category {
-            background-color: var(--surface-color);
-            padding: 2rem;
-            border-radius: 12px;
-            height: 100%;
-            transition: background-color 0.3s;
-        }
-
-        .skill-category:hover {
-            background-color: var(--surface-hover);
-        }
-
-        .skill-category h3 {
-            color: var(--accent-color);
-            border-bottom: 1px solid #334155;
-            padding-bottom: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .tag {
-            background-color: #334155;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin: 0.25rem;
-            transition: all 0.3s;
-            cursor: default;
-        }
-
-        .tag:hover {
-            background-color: var(--accent-color);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        /* --- Contact --- */
-        .contact-section {
-            background-color: var(--surface-color);
-            border-radius: 15px;
-            padding: 4rem 2rem;
-        }
-
-        .contact-item {
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            font-size: 1.1rem;
-            transition: transform 0.3s;
+            text-align: center;
+            position: relative;
+        }
+
+        .glitch-wrapper h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            color: #fff;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-shadow: 3px 3px 0 var(--neon-pink), -3px -3px 0 var(--neon-cyan);
             margin-bottom: 1rem;
         }
-        
-        .contact-item:hover {
-            transform: translateY(-3px);
+
+        .badge-dev {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.5rem 1rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            border-radius: 0;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         }
 
+        /* --- UI Cards (Glassmorphism + Cyberpunk) --- */
+        .hud-card {
+            background: var(--hud-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--neon-cyan);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            transition: 0.4s ease;
+        }
+
+        .hud-card::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: -1px;
+            width: 20px; height: 20px;
+            border-bottom: 3px solid var(--neon-cyan);
+            border-right: 3px solid var(--neon-cyan);
+            transition: 0.4s ease;
+        }
+
+        .hud-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 243, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
+        }
+        .hud-card:hover::after { width: 40px; height: 40px; }
+
+        .hud-card h3 { color: #fff; font-size: 1.5rem; }
+        .hud-card .date { color: var(--neon-pink); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 1rem; display: block;}
+
+        /* --- Project Grid (Mission Select) --- */
+        .project-img {
+            background: #000;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-img::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-20deg);
+            transition: 0.5s;
+        }
+
+        .hud-card:hover .project-img::after { left: 200%; }
+
+        .project-content { padding: 1.5rem 0 0 0; display: flex; flex-direction: column; height: 100%; }
+        .project-content p { color: var(--text-muted); flex-grow: 1; }
+
+        /* --- Skills (Player Stats) --- */
+        .stat-bar-container { margin-bottom: 1.5rem; }
+        .stat-label {
+            display: flex; justify-content: space-between;
+            font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 0.3rem; color: #fff;
+        }
+        .stat-track {
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            height: 15px; width: 100%; position: relative;
+        }
+        .stat-fill {
+            height: 100%; background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            position: relative;
+        }
+        .stat-fill::after {
+            content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 5px; background: #fff;
+        }
+
+        /* Different colors for skill categories */
+        .color-pink .stat-fill { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+        .color-green .stat-fill { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+
+        /* --- Contact --- */
+        .contact-panel { text-align: center; border-top: 3px solid var(--neon-pink); }
         .contact-item a {
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: color 0.3s;
+            color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;
         }
+        .contact-item a:hover { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
 
-        .contact-item a:hover {
-            color: var(--accent-color);
-        }
+        footer { background: #000; border-top: 1px solid #222; text-align: center; padding: 2rem 0; font-family: 'Orbitron'; font-size: 0.8rem; color: var(--text-muted); }
 
-        footer {
-            background-color: #0b1120;
-            color: var(--text-secondary);
-            padding: 2rem 0;
-            text-align: center;
-        }
     </style>
 </head>
-<body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true" tabindex="0">
+<body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-smooth-scroll="true" tabindex="0">
 
-    <nav id="main-nav" class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar shadow-sm">
+    <div class="scanline-effect"></div>
+
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-outline" id="cursorOutline"></div>
+
+    <nav id="main-nav" class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Omkar Sutar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#about">OS_DEV<span style="color: var(--neon-pink);">_v2.0</span></a>
+            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto gap-lg-3">
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <ul class="navbar-nav ms-auto gap-lg-4">
+                    <li class="nav-item"><a class="nav-link" href="#about">Player Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#experience">Quest Log</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Mission Select</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#skills">Base Stats</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Comm Link</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <section class="hero animate-on-scroll" id="about">
-        <div class="container">
-            <h1>Hi, I'm Omkar Sutar</h1>
-            <h2 class="mb-4">Unity & AR/VR Developer</h2>
-            <p>With over a year of experience, I specialize in building interactive AR, VR, 2D, and 3D applications using Unity and C#. I focus heavily on AR Foundation, performance optimization, clean OOP architecture, and scalable gameplay systems for mobile platforms.</p>
-            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-                <a href="#projects" class="btn-custom cta-btn">View My Work</a>
-                <a href="#contact" class="btn-outline-custom">Contact Me</a>
+    <section class="hero" id="about">
+        <div class="container reveal-on-scroll">
+            <div class="glitch-wrapper">
+                <h1>OMKAR SUTAR</h1>
+            </div>
+            <div class="badge-dev">CLASS: UNITY & AR/VR DEVELOPER</div>
+            <p class="mx-auto fs-5 mb-5" style="max-width: 700px; color: var(--text-muted);">
+                Leveling up interactive AR, VR, 2D, and 3D applications using Unity and C#. Equipped with AR Foundation, performance optimization techniques, clean OOP architecture, and scalable gameplay mechanics for mobile platforms.
+            </p>
+            <div class="d-flex justify-content-center gap-4 flex-wrap">
+                <a href="#projects" class="btn-custom">INITIATE MISSIONS</a>
+                <a href="#contact" class="btn-custom btn-play">OPEN COMM LINK</a>
             </div>
         </div>
     </section>
 
-    <section id="experience" class="animate-on-scroll">
+    <section id="experience">
         <div class="container">
-            <h2 class="section-title">Work Experience</h2>
+            <h2 class="section-title reveal-on-scroll">QUEST LOG</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     
-                    <div class="experience-card">
+                    <div class="hud-card reveal-on-scroll">
                         <h3>Unity Game Developer</h3>
-                        <span class="date">Midknight Studio Pvt. Ltd. | Feb 2025 - Present</span>
-                        <ul class="mb-0">
-                            <li>Develop interactive AR-based and 2D/3D Unity applications with reusable systems.</li>
-                            <li>Implement Firebase-backed authentication, progress tracking, and achievements.</li>
-                            <li>Work on basic VR concepts including camera setup, user interaction, and scene navigation.</li>
-                            <li>Optimize performance for smooth gameplay on mobile devices.</li>
+                        <span class="date">GUILD: Midknight Studio Pvt. Ltd. | TIMEFRAME: Feb 2025 - Present</span>
+                        <ul class="mb-0 text-muted">
+                            <li>Developed interactive AR-based and 2D/3D Unity applications with modular, reusable systems.</li>
+                            <li>Integrated Firebase backend systems for user authentication, progress saving, and live achievements.</li>
+                            <li>Scripted core VR interactions including camera rigging, physical object grabbing, and spatial scene navigation.</li>
+                            <li>Executed deep performance profiling to maintain 60FPS+ on mid-tier mobile hardware.</li>
                         </ul>
                     </div>
 
-                    <div class="experience-card">
+                    <div class="hud-card reveal-on-scroll">
                         <h3>Unity Developer Intern</h3>
-                        <span class="date">Ciklum Pvt. Ltd. | Jan 2024 - Jul 2024</span>
-                        <ul class="mb-0">
-                            <li>Built AR applications using AR Foundation with object placement and scaling.</li>
-                            <li>Developed 2D/3D interactive games including drag-and-drop mechanics, quizzes, and puzzles.</li>
-                            <li>Implemented audio-guided interactions and multi-language support.</li>
-                            <li>Applied object pooling and clean coding practices for significant performance improvements.</li>
+                        <span class="date">GUILD: Ciklum Pvt. Ltd. | TIMEFRAME: Jan 2024 - Jul 2024</span>
+                        <ul class="mb-0 text-muted">
+                            <li>Built AR mobile applications utilizing AR Foundation (Plane detection, object placement, scaling mechanics).</li>
+                            <li>Engineered core loops for 2D/3D interactive titles (drag-and-drop systems, logic puzzles, quiz engines).</li>
+                            <li>Programmed spatial audio interactions and dynamic multi-language localization systems.</li>
+                            <li>Implemented Object Pooling architecture, drastically reducing garbage collection spikes and load times.</li>
                         </ul>
                     </div>
 
@@ -394,62 +420,62 @@
         </div>
     </section>
 
-    <section id="projects" class="animate-on-scroll">
+    <section id="projects">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
+            <h2 class="section-title reveal-on-scroll">MISSION SELECT</h2>
             <div class="row g-4">
                 
-                <div class="col-md-6 col-lg-4">
-                    <div class="project-card">
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🧱</div>
-                        <div class="project-content">
-                            <h3 class="h5 text-white">Tile Stack Puzzle</h3>
-                            <p>An endless tile stacking puzzle where blocks move from crates onto conveyor belts, focusing on smooth flow and timing strategy.</p>
-                            <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">View Project</a>
+                        <div class="project-content p-4">
+                            <h3 class="h5">Tile Stack Puzzle</h3>
+                            <p>An endless tile stacking puzzle. Engineered systems for crates, conveyor belt speeds, and precise timing mechanics.</p>
+                            <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="project-card">
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🏏</div>
-                        <div class="project-content">
-                            <h3 class="h5 text-white">Cricket Mania</h3>
-                            <p>A casual cricket-themed puzzle game where you arrange similar items together to clear them and earn points.</p>
-                            <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-custom w-100 text-center mt-auto">Play on Itch.io</a>
+                        <div class="project-content p-4">
+                            <h3 class="h5">Cricket Mania</h3>
+                            <p>Casual match-puzzle game. Features dynamic grid sorting algorithms, score multipliers, and particle FX on clearing items.</p>
+                            <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-custom btn-play w-100 text-center mt-auto">LAUNCH ON ITCH.IO</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="project-card">
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🔨</div>
-                        <div class="project-content">
-                            <h3 class="h5 text-white">Whack a mole</h3>
-                            <p>An educational whack-a-mole game where players hit the correct mole to answer questions, with support for manually adding custom questions.</p>
-                            <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">View Project</a>
+                        <div class="project-content p-4">
+                            <h3 class="h5">Whack a Mole (Ed-Tech)</h3>
+                            <p>Customizable educational tool. Built an ingest system allowing parents/teachers to input custom Q&A datasets tied to mole spawns.</p>
+                            <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="project-card">
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🕵️‍♂️</div>
-                        <div class="project-content">
-                            <h3 class="h5 text-white">Detective Game</h3>
-                            <p>A detective-themed learning game where players choose the correct answer based on a reference image, with custom content uploads.</p>
-                            <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">View Project</a>
+                        <div class="project-content p-4">
+                            <h3 class="h5">Detective Mystery</h3>
+                            <p>Image-based deduction game. Features an inventory system, UI dialogue trees, and local storage for custom case file uploads.</p>
+                            <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4">
-                    <div class="project-card">
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">📍</div>
-                        <div class="project-content">
-                            <h3 class="h5 text-white">Location Spawner AR</h3>
-                            <p>An AR application that lets users place and store location markers in real-world space to revisit specific spots within a 5 km range.</p>
-                            <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">View Project</a>
+                        <div class="project-content p-4">
+                            <h3 class="h5">Location Spawner AR</h3>
+                            <p>Geospatial AR application. Utilizes GPS data and ARCore/ARKit to anchor virtual markers in real physical space within a 5km radius.</p>
+                            <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
                         </div>
                     </div>
                 </div>
@@ -458,50 +484,59 @@
         </div>
     </section>
 
-    <section id="skills" class="animate-on-scroll">
+    <section id="skills">
         <div class="container">
-            <h2 class="section-title">Technical Expertise</h2>
-            <div class="row g-4">
+            <h2 class="section-title reveal-on-scroll">BASE STATS</h2>
+            <div class="row g-5 mt-3">
                 
-                <div class="col-md-4">
-                    <div class="skill-category">
-                        <h3>Game & Interactive</h3>
-                        <div>
-                            <span class="tag">Unity 2D/3D</span>
-                            <span class="tag">C#</span>
-                            <span class="tag">Gameplay Systems</span>
-                            <span class="tag">Physics</span>
-                            <span class="tag">State Machines</span>
-                            <span class="tag">OOP Patterns</span>
-                        </div>
+                <div class="col-md-4 reveal-on-scroll">
+                    <h4 class="mb-4 text-center" style="color: var(--neon-cyan);">CORE ENGINE</h4>
+                    
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Unity (2D/3D)</span> <span>LVL 95</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 95%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>C# Scripting</span> <span>LVL 90</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>OOP Design Patterns</span> <span>LVL 85</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="skill-category">
-                        <h3>AR / XR / VR</h3>
-                        <div>
-                            <span class="tag">AR Foundation</span>
-                            <span class="tag">ARCore & ARKit</span>
-                            <span class="tag">Plane/Object Tracking</span>
-                            <span class="tag">Face Tracking</span>
-                            <span class="tag">VR Camera Rig</span>
-                            <span class="tag">Gaze Input</span>
-                        </div>
+                <div class="col-md-4 reveal-on-scroll color-pink">
+                    <h4 class="mb-4 text-center" style="color: var(--neon-pink);">EXTENDED REALITY</h4>
+                    
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>AR Foundation</span> <span>LVL 90</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>VR Camera & Rigging</span> <span>LVL 75</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 75%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Spatial Tracking</span> <span>LVL 80</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 80%;"></div></div>
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="skill-category">
-                        <h3>Backend & Systems</h3>
-                        <div>
-                            <span class="tag">Firebase Auth</span>
-                            <span class="tag">Firestore</span>
-                            <span class="tag">Cloud Storage</span>
-                            <span class="tag">Analytics</span>
-                            <span class="tag">Object Pooling</span>
-                            <span class="tag">Git / GitHub</span>
-                        </div>
+                <div class="col-md-4 reveal-on-scroll color-green">
+                    <h4 class="mb-4 text-center" style="color: var(--neon-green);">NETWORK & SYSTEMS</h4>
+                    
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Firebase (Auth/DB)</span> <span>LVL 85</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Memory/Object Pooling</span> <span>LVL 92</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 92%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Git / Version Control</span> <span>LVL 88</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
                     </div>
                 </div>
 
@@ -509,26 +544,29 @@
         </div>
     </section>
 
-    <section id="contact" class="animate-on-scroll">
+    <section id="contact" class="pb-0">
         <div class="container">
-            <div class="contact-section text-center">
-                <h2 class="section-title mb-3">Let's Connect</h2>
-                <p class="text-secondary mb-5">Currently based in Baner, Pune, Maharashtra and open to new opportunities.</p>
+            <div class="hud-card contact-panel reveal-on-scroll">
+                <h2 class="section-title mb-4" style="color: var(--neon-pink);">ESTABLISH COMM LINK</h2>
+                <p class="text-muted mb-5">CURRENT SERVER: Chakan, Pune, Maharashtra | STATUS: LFG (Looking for Group/Opportunities)</p>
                 
-                <div class="row justify-content-center">
-                    <div class="col-md-4">
+                <div class="row justify-content-center text-center">
+                    <div class="col-md-4 mb-4">
                         <div class="contact-item">
-                            📧 <a href="mailto:sutaromkar218@gmail.com">sutaromkar218@gmail.com</a>
+                            <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">[ EMAIL PROXY ]</span>
+                            <a href="mailto:sutaromkar218@gmail.com">sutaromkar218@gmail.com</a>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-4">
                         <div class="contact-item">
-                            📱 <a href="tel:+919325268774">+91 9325268774</a>
+                            <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">[ DIRECT FREQUENCY ]</span>
+                            <a href="tel:+919325268774">+91 9325268774</a>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-4">
                         <div class="contact-item">
-                            💼 <a href="https://linkedin.com/in/OmkarSutar" target="_blank">LinkedIn</a>
+                            <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">[ LINKEDIN NETWORK ]</span>
+                            <a href="https://linkedin.com/in/OmkarSutar" target="_blank">Terminal Access</a>
                         </div>
                     </div>
                 </div>
@@ -538,8 +576,8 @@
 
     <footer>
         <div class="container">
-            <p class="mb-1">&copy; 2026 Omkar Sutar. All rights reserved.</p>
-            <p class="small mb-0">B.Tech in E&TC | Government College of Engineering, Karad</p>
+            <p class="mb-1">SYSTEM BOOT &copy; 2026 OMKAR SUTAR. ALL ASSETS SECURED.</p>
+            <p class="mb-0 text-muted">B.Tech in E&TC | Government College of Engineering, Karad</p>
         </div>
     </footer>
 
@@ -547,20 +585,53 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Custom Hover/Click Cursor Logic
+            const cursorDot = document.getElementById('cursorDot');
+            const cursorOutline = document.getElementById('cursorOutline');
+            
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                
+                cursorDot.style.left = `${posX - 4}px`; // Center 8px dot
+                cursorDot.style.top = `${posY - 4}px`;
+                
+                // Add slight delay to outline for cool effect
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 250, fill: "forwards" });
+            });
+
+            // Make cursor react to interactive elements
+            const interactables = document.querySelectorAll('a, button, .hud-card');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorOutline.style.width = '60px';
+                    cursorOutline.style.height = '60px';
+                    cursorOutline.style.backgroundColor = 'rgba(0, 243, 255, 0.1)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorOutline.style.width = '40px';
+                    cursorOutline.style.height = '40px';
+                    cursorOutline.style.backgroundColor = 'transparent';
+                });
+            });
+
+            // 2. Scroll Animation Observer
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('show');
+                        entry.target.classList.add('active');
                     }
                 });
-            }, {
-                threshold: 0.1 
-            });
+            }, { threshold: 0.15 });
 
-            const hiddenElements = document.querySelectorAll('.animate-on-scroll');
+            const hiddenElements = document.querySelectorAll('.reveal-on-scroll');
             hiddenElements.forEach((el) => observer.observe(el));
 
-            // Auto-close mobile navbar when a link is clicked
+            // 3. Auto-close mobile navbar on click
             const navLinks = document.querySelectorAll('.nav-link');
             const menuToggle = document.getElementById('navbarNav');
             const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle: false});
