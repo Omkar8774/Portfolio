@@ -105,6 +105,11 @@
 
         .navbar-toggler {
             border-color: var(--border-color);
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
         }
 
         .navbar-toggler-icon {
@@ -554,7 +559,7 @@
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="https://linkedin.com/in/OmkarSutar" target="_blank" class="contact-link">
+                        <a href="https://www.linkedin.com/in/omkar-sutar-543972214/" target="_blank" class="contact-link">
                             <span>LinkedIn</span>
                             <div class="fs-5">View Profile</div>
                         </a>
@@ -575,7 +580,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Scroll animations
+            // 1. Scroll Animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -586,26 +591,30 @@
 
             document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
 
-            // Navbar elements
+            // 2. Mobile Menu Fix (Native Click Method)
+            const togglerBtn = document.querySelector('.navbar-toggler');
+            const collapseMenu = document.getElementById('navbarNav');
             const navLinks = document.querySelectorAll('.nav-link');
-            const menuToggle = document.getElementById('navbarNav');
-            
-            // 1. Close menu when a link is clicked
-            navLinks.forEach((l) => {
-                l.addEventListener('click', () => {
-                    if (menuToggle.classList.contains('show')) {
-                        const bsCollapse = bootstrap.Collapse.getInstance(menuToggle) || new bootstrap.Collapse(menuToggle);
-                        bsCollapse.hide();
-                    }
-                });
+
+            // Helper function to close menu
+            const closeMenuNatively = () => {
+                if (collapseMenu.classList.contains('show')) {
+                    togglerBtn.click(); // Programmatically clicks the hamburger button
+                }
+            };
+
+            // Close when clicking a link
+            navLinks.forEach(link => {
+                link.addEventListener('click', closeMenuNatively);
             });
 
-            // 2. Close menu when the user scrolls (drags down/up)
+            // Close when scrolling (with slight debounce to prevent lag)
+            let scrollTimer;
             window.addEventListener('scroll', () => {
-                if (menuToggle.classList.contains('show')) {
-                    const bsCollapse = bootstrap.Collapse.getInstance(menuToggle) || new bootstrap.Collapse(menuToggle);
-                    bsCollapse.hide();
-                }
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(() => {
+                    closeMenuNatively();
+                }, 100);
             });
         });
     </script>
