@@ -380,7 +380,7 @@
                     </div>
 
                     <div class="corporate-card fade-in-up">
-                        <h3>Freelance Game Developer</h3>
+                        <h3>Freelance Game Developer (Educational XR/3D)</h3>
                         <span class="date-badge">Self-Employed | Aug 2024 - Jan 2025</span>
                         <ul>
                             <li>Developed and delivered interactive educational games utilizing Unity 2D and 3D, focused on enhancing student engagement and learning retention.</li>
@@ -548,7 +548,7 @@
         <div class="container fade-in-up">
             <div class="contact-box">
                 <h2 class="mb-3">Let's Build Something Great</h2>
-                <p class="mb-5">Open to full-time opportunities and collaborative tech projects.<br>Based in Baner, Pune, Maharashtra.</p>
+                <p class="mb-5">Open to full-time opportunities and collaborative tech projects.<br>Based in Chakan, Pune, Maharashtra.</p>
                 
                 <div class="row justify-content-center g-4">
                     <div class="col-md-4">
@@ -596,7 +596,7 @@
 
             document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
 
-            // 2. Mobile Menu Fix (Native Click Method & Scroll Down Check)
+            // 2. Mobile Menu Fix (Native Click Method & Scroll Buffer)
             const togglerBtn = document.querySelector('.navbar-toggler');
             const collapseMenu = document.getElementById('navbarNav');
             const navLinks = document.querySelectorAll('.nav-link');
@@ -612,21 +612,29 @@
                 link.addEventListener('click', closeMenuNatively);
             });
 
-            // Tracking scroll direction to only close on DOWNWARD scroll
-            let lastScrollTop = 0;
+            // Advanced Scroll Tracking for Downward Swipe
+            let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollThreshold = 20; // Requires an actual 20px drag to trigger
             
             window.addEventListener('scroll', () => {
                 let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
                 
-                // Only close the menu if scrolling DOWN
-                if (currentScroll > lastScrollTop) {
-                    if (collapseMenu.classList.contains('show')) {
-                        togglerBtn.click();
-                    }
-                }
+                // Calculate exactly how far the user scrolled
+                let scrollDifference = currentScroll - lastScrollTop;
                 
-                // Update the last scroll position (preventing negative values on mobile "bounce" scroll)
-                lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+                // Only process the scroll if it was a deliberate swipe (larger than 20px)
+                if (Math.abs(scrollDifference) > scrollThreshold) {
+                    
+                    // If the difference is positive, they scrolled DOWN
+                    if (scrollDifference > 0) {
+                        if (collapseMenu.classList.contains('show')) {
+                            togglerBtn.click();
+                        }
+                    }
+                    
+                    // Reset the baseline for the next swipe
+                    lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+                }
             }, false);
         });
     </script>
