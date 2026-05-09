@@ -22,8 +22,10 @@
             --accent-hover: #2563eb;   
         }
 
+        /* --- THE SNAP FIX --- */
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 85px; /* Exactly offsets the navbar height natively */
         }
 
         body {
@@ -51,11 +53,8 @@
             color: var(--text-main);
         }
         
-        /* --- THE BULLETPROOF SNAP FIX --- */
         section {
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-            scroll-margin-top: 90px; /* Forces a 90px gap above the section so the navbar doesn't cover it */
+            padding: 5rem 0;
         }
 
         .section-title {
@@ -328,7 +327,7 @@
         }
     </style>
 </head>
-<body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-smooth-scroll="true">
+<body data-bs-spy="scroll" data-bs-target="#main-nav">
 
     <nav id="main-nav" class="navbar navbar-expand-lg fixed-top">
         <div class="container">
@@ -602,19 +601,16 @@
             const collapseMenu = document.getElementById('navbarNav');
             const navLinks = document.querySelectorAll('.nav-link');
 
-            // Helper function to close menu
             const closeMenuNatively = () => {
                 if (collapseMenu.classList.contains('show')) {
-                    togglerBtn.click(); // Programmatically clicks the hamburger button
+                    togglerBtn.click();
                 }
             };
 
-            // Close when clicking a link
             navLinks.forEach(link => {
                 link.addEventListener('click', closeMenuNatively);
             });
 
-            // Close when scrolling (with slight debounce to prevent lag)
             let scrollTimer;
             window.addEventListener('scroll', () => {
                 clearTimeout(scrollTimer);
