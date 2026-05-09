@@ -13,18 +13,18 @@
     
     <style>
         :root {
-            --bg-main: #0f172a;       /* Dark Slate */
-            --bg-card: #1e293b;       /* Lighter Slate */
-            --border-color: #334155;  /* Subtle Border */
-            --text-main: #f8fafc;     /* Off-White */
-            --text-muted: #94a3b8;    /* Soft Gray */
-            --accent-primary: #3b82f6; /* Corporate Blue */
-            --accent-hover: #2563eb;   /* Darker Blue */
+            --bg-main: #0f172a;       
+            --bg-card: #1e293b;       
+            --border-color: #334155;  
+            --text-main: #f8fafc;     
+            --text-muted: #94a3b8;    
+            --accent-primary: #3b82f6; 
+            --accent-hover: #2563eb;   
         }
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 80px; /* Offset for fixed navbar */
+            scroll-padding-top: 80px; 
         }
 
         body {
@@ -47,7 +47,6 @@
             transform: translateY(0);
         }
 
-        /* --- Typography & Headings --- */
         h1, h2, h3, h4, h5 {
             font-weight: 600;
             color: var(--text-main);
@@ -78,17 +77,18 @@
             border-radius: 2px;
         }
 
-        /* --- Navbar (Corporate & Functional) --- */
+        /* --- Navbar (FIXED: Increased z-index to ensure interactivity) --- */
         .navbar {
             background-color: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
+            z-index: 1050 !important; /* Forces navbar to stay above everything */
         }
         
         .navbar-brand {
             font-weight: 700;
-            color: var(--text-main) !important;
+            color: #ffffff !important;
             letter-spacing: 0.5px;
         }
 
@@ -132,7 +132,7 @@
 
         .btn-outline-custom {
             background-color: transparent;
-            color: var(--text-main);
+            color: #ffffff;
             border: 1px solid var(--border-color);
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
@@ -182,7 +182,7 @@
             margin: 0 auto 2.5rem auto;
         }
 
-        /* --- Professional Cards (Experience & Projects) --- */
+        /* --- Corporate Cards --- */
         .corporate-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -190,6 +190,8 @@
             padding: 2rem;
             margin-bottom: 1.5rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .corporate-card:hover {
@@ -201,6 +203,7 @@
         .corporate-card h3 {
             font-size: 1.25rem;
             margin-bottom: 0.25rem;
+            color: #ffffff;
         }
 
         .date-badge {
@@ -217,9 +220,7 @@
             margin-bottom: 0;
         }
 
-        .corporate-card li {
-            margin-bottom: 0.5rem;
-        }
+        .corporate-card li { margin-bottom: 0.5rem; }
 
         /* --- Project Grid --- */
         .project-icon {
@@ -256,6 +257,7 @@
             margin-bottom: 1.25rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 0.75rem;
+            color: #ffffff;
         }
 
         .skill-pill {
@@ -269,7 +271,7 @@
             margin: 0.25rem;
         }
 
-        /* --- Contact Section --- */
+        /* --- Contact Section (FIXED: Enforced hard white text) --- */
         .contact-box {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -278,8 +280,11 @@
             text-align: center;
         }
 
+        .contact-box h2 {
+            color: #ffffff;
+        }
+
         .contact-link {
-            color: var(--text-main);
             text-decoration: none;
             display: flex;
             flex-direction: column;
@@ -291,13 +296,24 @@
 
         .contact-link:hover {
             background-color: rgba(255, 255, 255, 0.05);
-            color: var(--accent-primary);
         }
 
         .contact-link span {
             color: var(--text-muted);
             font-size: 0.875rem;
             margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contact-link div.fs-5 {
+            color: #ffffff !important; /* Forces the main contact text to be bright white */
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .contact-link:hover div.fs-5 {
+            color: var(--accent-primary) !important;
         }
 
         footer {
@@ -309,7 +325,7 @@
         }
     </style>
 </head>
-<body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-smooth-scroll="true" tabindex="0">
+<body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-smooth-scroll="true">
 
     <nav id="main-nav" class="navbar navbar-expand-lg fixed-top">
         <div class="container">
@@ -396,7 +412,7 @@
                 <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="corporate-card h-100 d-flex flex-column">
                         <div class="project-icon">🧱</div>
-                        <h3 class="h5">Tile Stack Puzzle</h3>
+                        <h3 class="h5" style="color: #ffffff;">Tile Stack Puzzle</h3>
                         <p class="project-desc">An endless tile-stacking puzzle focusing on smooth game flow. Engineered physics logic for crate spawning, conveyor belt speeds, and precise timing mechanics.</p>
                         <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
@@ -405,7 +421,7 @@
                 <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="corporate-card h-100 d-flex flex-column">
                         <div class="project-icon">🏏</div>
-                        <h3 class="h5">Cricket Mania</h3>
+                        <h3 class="h5" style="color: #ffffff;">Cricket Mania</h3>
                         <p class="project-desc">Casual match-puzzle game. Implemented dynamic grid sorting algorithms, state management for score multipliers, and particle FX systems.</p>
                         <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-primary-custom w-100 text-center mt-auto">Play on Itch.io</a>
                     </div>
@@ -414,7 +430,7 @@
                 <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="corporate-card h-100 d-flex flex-column">
                         <div class="project-icon">🔨</div>
-                        <h3 class="h5">Whack a Mole (Ed-Tech)</h3>
+                        <h3 class="h5" style="color: #ffffff;">Whack a Mole (Ed-Tech)</h3>
                         <p class="project-desc">Customizable educational tool. Built an ingest system utilizing ScriptableObjects to allow custom Q&A datasets tied to randomized spawning logic.</p>
                         <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
@@ -423,7 +439,7 @@
                 <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="corporate-card h-100 d-flex flex-column">
                         <div class="project-icon">🕵️‍♂️</div>
-                        <h3 class="h5">Detective Mystery</h3>
+                        <h3 class="h5" style="color: #ffffff;">Detective Mystery</h3>
                         <p class="project-desc">Deduction game featuring an inventory system, UI-driven dialogue trees, and local storage integration for custom case file asset loading.</p>
                         <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
@@ -432,7 +448,7 @@
                 <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="corporate-card h-100 d-flex flex-column">
                         <div class="project-icon">📍</div>
-                        <h3 class="h5">Location Spawner AR</h3>
+                        <h3 class="h5" style="color: #ffffff;">Location Spawner AR</h3>
                         <p class="project-desc">Geospatial AR app. Utilized GPS data combined with AR Foundation to mathematically anchor virtual markers in physical space within a 5km radius.</p>
                         <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
@@ -536,18 +552,17 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Scroll fade-in animations
+            // FIXED: Lowered threshold from 0.1 to 0.05 so the contact section always triggers even on small screens
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.1 });
+            }, { threshold: 0.05 });
 
             document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
 
-            // Ensure mobile navbar closes when a link is clicked
             const navLinks = document.querySelectorAll('.nav-link');
             const menuToggle = document.getElementById('navbarNav');
             const bsCollapse = new bootstrap.Collapse(menuToggle, { toggle: false });
