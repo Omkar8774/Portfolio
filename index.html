@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omkar Sutar | Game Dev HUD</title>
+    <title>Omkar Sutar | Unity & AR/VR Developer</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -18,24 +18,23 @@
             --neon-cyan: #00f3ff;
             --neon-pink: #ff00ea;
             --neon-green: #39ff14;
+            --neon-yellow: #ffea00;
             --text-main: #e0e6ed;
             --text-muted: #8b9bb4;
         }
 
-        /* --- THE FIX FOR THE SCROLL SNAP --- */
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 100px; /* Forces links to snap below the navbar */
-            cursor: none; /* Hides default cursor for our custom one */
+            scroll-padding-top: 100px;
+            cursor: none; 
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Rajdhani', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             overflow-x: hidden;
-            /* Gamified Holo-Grid Background */
             background-image: 
                 linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
@@ -48,30 +47,18 @@
             text-transform: uppercase;
         }
 
-        /* --- Custom Interactive Cursor --- */
+        /* --- Interactive Cursor --- */
         .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 9999;
+            width: 8px; height: 8px; background: var(--neon-cyan); border-radius: 50%;
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
             box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
             transition: transform 0.1s;
         }
         .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(0, 243, 255, 0.5);
-            border-radius: 50%;
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 9998;
+            width: 40px; height: 40px; border: 2px solid rgba(0, 243, 255, 0.5); border-radius: 50%;
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998;
             transition: width 0.2s, height 0.2s, background-color 0.2s;
-            transform: translate(-50%, -50%); /* Center over dot */
+            transform: translate(-50%, -50%);
         }
 
         /* --- Animations --- */
@@ -79,268 +66,105 @@
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100vh); }
         }
-        
         .scanline-effect {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.05), transparent);
-            animation: scanline 6s linear infinite;
-            pointer-events: none;
-            z-index: 9000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.03), transparent);
+            animation: scanline 8s linear infinite; pointer-events: none; z-index: 9000;
         }
-
         .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
+            opacity: 0; transform: translateY(30px) scale(0.98);
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .reveal-on-scroll.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        .reveal-on-scroll.active { opacity: 1; transform: translateY(0) scale(1); }
 
         /* --- HUD Navbar --- */
         .navbar {
-            background: rgba(5, 5, 5, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
             padding: 1rem 0;
         }
-
         .navbar-brand {
-            color: #fff !important;
-            font-weight: 900;
-            letter-spacing: 2px;
+            color: #fff !important; font-weight: 900; letter-spacing: 2px;
             text-shadow: 0 0 10px var(--neon-cyan);
         }
-
         .nav-link {
-            color: var(--text-muted) !important;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            position: relative;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s;
+            color: var(--text-muted) !important; font-size: 0.9rem; letter-spacing: 1px;
+            position: relative; padding: 0.5rem 1rem; transition: color 0.3s;
         }
+        .nav-link::before { content: '['; position: absolute; left: 0; opacity: 0; color: var(--neon-cyan); transition: 0.3s; transform: translateX(10px); }
+        .nav-link::after { content: ']'; position: absolute; right: 0; opacity: 0; color: var(--neon-cyan); transition: 0.3s; transform: translateX(-10px); }
+        .nav-link:hover, .nav-link.active { color: var(--neon-cyan) !important; text-shadow: 0 0 8px var(--neon-cyan); }
+        .nav-link:hover::before, .nav-link:hover::after, .nav-link.active::before, .nav-link.active::after { opacity: 1; transform: translateX(0); }
 
-        .nav-link::before {
-            content: '[';
-            position: absolute;
-            left: 0;
-            opacity: 0;
-            color: var(--neon-cyan);
-            transition: opacity 0.3s, transform 0.3s;
-            transform: translateX(10px);
-        }
-        .nav-link::after {
-            content: ']';
-            position: absolute;
-            right: 0;
-            opacity: 0;
-            color: var(--neon-cyan);
-            transition: opacity 0.3s, transform 0.3s;
-            transform: translateX(-10px);
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: var(--neon-cyan) !important;
-            text-shadow: 0 0 8px var(--neon-cyan);
-        }
-        .nav-link:hover::before, .nav-link:hover::after,
-        .nav-link.active::before, .nav-link.active::after {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* --- Global Layout & Titles --- */
+        /* --- Global Layout --- */
         section { padding: 5rem 0; }
-        
         .section-title {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 3rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-shadow: 2px 2px 0px rgba(0, 243, 255, 0.5);
-            position: relative;
-            display: inline-block;
-            left: 50%;
-            transform: translateX(-50%);
+            color: #fff; text-align: center; margin-bottom: 3rem; font-weight: 700; letter-spacing: 3px;
+            text-shadow: 2px 2px 0px rgba(0, 243, 255, 0.3); position: relative;
         }
-        
-        .section-title::before, .section-title::after {
-            content: '///';
-            color: var(--neon-cyan);
-            margin: 0 15px;
-            font-size: 1.5rem;
-            vertical-align: middle;
-        }
+        .section-title::before, .section-title::after { content: '///'; color: var(--neon-cyan); margin: 0 15px; font-size: 1.5rem; vertical-align: middle; }
 
         /* --- Buttons --- */
         .btn-custom {
-            background: transparent;
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-            padding: 0.8rem 2rem;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            transition: 0.3s;
-            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1), 0 0 10px rgba(0, 243, 255, 0.2);
-            text-decoration: none;
-            display: inline-block;
+            background: transparent; color: var(--neon-cyan); border: 1px solid var(--neon-cyan);
+            padding: 0.8rem 2rem; font-size: 0.95rem; letter-spacing: 2px; position: relative;
+            overflow: hidden; z-index: 1; transition: 0.3s; font-weight: 700;
+            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1); text-decoration: none; display: inline-block;
         }
-
         .btn-custom::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: var(--neon-cyan);
-            z-index: -1;
-            transition: 0.3s;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--neon-cyan); z-index: -1; transition: 0.3s;
         }
-
-        .btn-custom:hover {
-            color: #000;
-            box-shadow: 0 0 20px var(--neon-cyan);
-            transform: scale(1.05);
-        }
-
-        .btn-custom:hover::before {
-            left: 0;
-        }
-
-        .btn-play {
-            border-color: var(--neon-pink);
-            color: var(--neon-pink);
-            box-shadow: inset 0 0 10px rgba(255, 0, 234, 0.1), 0 0 10px rgba(255, 0, 234, 0.2);
-        }
+        .btn-custom:hover { color: #000; box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.02); }
+        .btn-custom:hover::before { left: 0; }
+        
+        .btn-play { border-color: var(--neon-pink); color: var(--neon-pink); }
         .btn-play::before { background: var(--neon-pink); }
         .btn-play:hover { color: #fff; box-shadow: 0 0 20px var(--neon-pink); }
 
         /* --- Hero Section --- */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-        }
-
-        .glitch-wrapper h1 {
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            color: #fff;
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-shadow: 3px 3px 0 var(--neon-pink), -3px -3px 0 var(--neon-cyan);
-            margin-bottom: 1rem;
-        }
-
+        .hero { min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); color: #fff; letter-spacing: 4px; text-shadow: 3px 3px 0 var(--neon-pink), -3px -3px 0 var(--neon-cyan); margin-bottom: 1rem; }
         .badge-dev {
-            background: rgba(0, 243, 255, 0.1);
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 0.5rem 1rem;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 2px;
-            display: inline-block;
-            margin-bottom: 2rem;
-            border-radius: 0;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            background: rgba(0, 243, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
+            padding: 0.5rem 1.5rem; font-family: 'Orbitron'; letter-spacing: 2px; display: inline-block;
+            margin-bottom: 2rem; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); font-weight: bold;
         }
 
-        /* --- UI Cards (Glassmorphism + Cyberpunk) --- */
+        /* --- UI Cards --- */
         .hud-card {
-            background: var(--hud-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid var(--neon-cyan);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            position: relative;
-            transition: 0.4s ease;
+            background: var(--hud-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--neon-cyan); padding: 2.5rem; margin-bottom: 2rem;
+            position: relative; transition: 0.4s ease;
         }
-
         .hud-card::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; right: -1px;
-            width: 20px; height: 20px;
-            border-bottom: 3px solid var(--neon-cyan);
-            border-right: 3px solid var(--neon-cyan);
-            transition: 0.4s ease;
+            content: ''; position: absolute; bottom: -1px; right: -1px; width: 20px; height: 20px;
+            border-bottom: 3px solid var(--neon-cyan); border-right: 3px solid var(--neon-cyan); transition: 0.4s ease;
         }
-
-        .hud-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 243, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
-        }
+        .hud-card:hover { transform: translateY(-5px); border-color: rgba(0, 243, 255, 0.4); box-shadow: 0 10px 30px rgba(0, 243, 255, 0.1); }
         .hud-card:hover::after { width: 40px; height: 40px; }
+        .hud-card h3 { color: #fff; font-size: 1.6rem; letter-spacing: 1px; }
+        .hud-card .date { color: var(--neon-pink); font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 1.5rem; display: block; font-weight: bold;}
 
-        .hud-card h3 { color: #fff; font-size: 1.5rem; }
-        .hud-card .date { color: var(--neon-pink); font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 1rem; display: block;}
-
-        /* --- Project Grid (Mission Select) --- */
+        /* --- Project Grid --- */
         .project-img {
-            background: #000;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
-            position: relative;
-            overflow: hidden;
+            background: #000; height: 180px; display: flex; align-items: center; justify-content: center;
+            font-size: 4rem; border-bottom: 1px solid rgba(0, 243, 255, 0.2); position: relative; overflow: hidden;
         }
-
-        .project-img::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: skewX(-20deg);
-            transition: 0.5s;
-        }
-
-        .hud-card:hover .project-img::after { left: 200%; }
-
         .project-content { padding: 1.5rem 0 0 0; display: flex; flex-direction: column; height: 100%; }
-        .project-content p { color: var(--text-muted); flex-grow: 1; }
+        .project-content p { color: var(--text-muted); flex-grow: 1; font-size: 1rem; line-height: 1.5; }
 
-        /* --- Skills (Player Stats) --- */
-        .stat-bar-container { margin-bottom: 1.5rem; }
-        .stat-label {
-            display: flex; justify-content: space-between;
-            font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 0.3rem; color: #fff;
-        }
-        .stat-track {
-            background: #111; border: 1px solid rgba(255,255,255,0.1);
-            height: 15px; width: 100%; position: relative;
-        }
-        .stat-fill {
-            height: 100%; background: var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan);
-            position: relative;
-        }
-        .stat-fill::after {
-            content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 5px; background: #fff;
-        }
-
-        /* Different colors for skill categories */
+        /* --- Skill Trees --- */
+        .stat-bar-container { margin-bottom: 1.2rem; }
+        .stat-label { display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 0.4rem; color: #fff; }
+        .stat-track { background: #111; border: 1px solid rgba(255,255,255,0.1); height: 12px; width: 100%; }
+        .stat-fill { height: 100%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+        
         .color-pink .stat-fill { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
         .color-green .stat-fill { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+        .color-yellow .stat-fill { background: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
 
-        /* --- Contact --- */
-        .contact-panel { text-align: center; border-top: 3px solid var(--neon-pink); }
-        .contact-item a {
-            color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;
-        }
-        .contact-item a:hover { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
+        .skill-group h4 { font-size: 1.2rem; margin-bottom: 1.5rem; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
 
         footer { background: #000; border-top: 1px solid #222; text-align: center; padding: 2rem 0; font-family: 'Orbitron'; font-size: 0.8rem; color: var(--text-muted); }
 
@@ -349,23 +173,22 @@
 <body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-smooth-scroll="true" tabindex="0">
 
     <div class="scanline-effect"></div>
-
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-outline" id="cursorOutline"></div>
 
     <nav id="main-nav" class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#about">OS_DEV<span style="color: var(--neon-pink);">_v2.0</span></a>
-            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#about">OMKAR_SUTAR</a>
+            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto gap-lg-4">
-                    <li class="nav-item"><a class="nav-link" href="#about">Player Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#experience">Quest Log</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#projects">Mission Select</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#skills">Base Stats</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Comm Link</a></li>
+                <ul class="navbar-nav ms-auto gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="#about">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#skills">Technical Skills</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -373,45 +196,44 @@
 
     <section class="hero" id="about">
         <div class="container reveal-on-scroll">
-            <div class="glitch-wrapper">
-                <h1>OMKAR SUTAR</h1>
-            </div>
-            <div class="badge-dev">CLASS: UNITY & AR/VR DEVELOPER</div>
-            <p class="mx-auto fs-5 mb-5" style="max-width: 700px; color: var(--text-muted);">
-                Leveling up interactive AR, VR, 2D, and 3D applications using Unity and C#. Equipped with AR Foundation, performance optimization techniques, clean OOP architecture, and scalable gameplay mechanics for mobile platforms.
+            <h1>OMKAR SUTAR</h1>
+            <div class="badge-dev">SOFTWARE ENGINEER | UNITY & AR/VR</div>
+            <p class="mx-auto mb-5" style="max-width: 800px; color: var(--text-muted); line-height: 1.7;">
+                Detail-oriented Game Developer specializing in scalable architecture, interactive XR systems, and Game AI. Proficient in C# and the Unity Engine, with a strong focus on Object-Oriented Programming (OOP), performance optimization, and implementing robust backend solutions for cross-platform mobile applications.
             </p>
             <div class="d-flex justify-content-center gap-4 flex-wrap">
-                <a href="#projects" class="btn-custom">INITIATE MISSIONS</a>
-                <a href="#contact" class="btn-custom btn-play">OPEN COMM LINK</a>
+                <a href="#projects" class="btn-custom">VIEW PORTFOLIO</a>
+                <a href="#contact" class="btn-custom btn-play">GET IN TOUCH</a>
             </div>
         </div>
     </section>
 
     <section id="experience">
         <div class="container">
-            <h2 class="section-title reveal-on-scroll">QUEST LOG</h2>
+            <h2 class="section-title reveal-on-scroll">PROFESSIONAL EXPERIENCE</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     
                     <div class="hud-card reveal-on-scroll">
                         <h3>Unity Game Developer</h3>
-                        <span class="date">GUILD: Midknight Studio Pvt. Ltd. | TIMEFRAME: Feb 2025 - Present</span>
-                        <ul class="mb-0 text-muted">
-                            <li>Developed interactive AR-based and 2D/3D Unity applications with modular, reusable systems.</li>
-                            <li>Integrated Firebase backend systems for user authentication, progress saving, and live achievements.</li>
-                            <li>Scripted core VR interactions including camera rigging, physical object grabbing, and spatial scene navigation.</li>
-                            <li>Executed deep performance profiling to maintain 60FPS+ on mid-tier mobile hardware.</li>
+                        <span class="date">Midknight Studio Pvt. Ltd. | Feb 2025 - Present</span>
+                        <ul class="mb-0 text-muted" style="line-height: 1.8;">
+                            <li>Architected and deployed interactive AR and 2D/3D Unity applications, emphasizing reusable code and modular game systems.</li>
+                            <li>Engineered advanced Game AI components, including pathfinding and state-driven behavior logic for dynamic NPC interactions.</li>
+                            <li>Integrated Firebase backend infrastructure to manage secure user authentication, real-time database progress tracking, and live achievements.</li>
+                            <li>Optimized rendering pipelines and implemented object pooling to sustain high framerates and reduce CPU/GPU overhead on mobile devices.</li>
+                            <li>Established core VR foundations including camera rigging, spatial tracking, and physics-based interactions.</li>
                         </ul>
                     </div>
 
                     <div class="hud-card reveal-on-scroll">
                         <h3>Unity Developer Intern</h3>
-                        <span class="date">GUILD: Ciklum Pvt. Ltd. | TIMEFRAME: Jan 2024 - Jul 2024</span>
-                        <ul class="mb-0 text-muted">
-                            <li>Built AR mobile applications utilizing AR Foundation (Plane detection, object placement, scaling mechanics).</li>
-                            <li>Engineered core loops for 2D/3D interactive titles (drag-and-drop systems, logic puzzles, quiz engines).</li>
-                            <li>Programmed spatial audio interactions and dynamic multi-language localization systems.</li>
-                            <li>Implemented Object Pooling architecture, drastically reducing garbage collection spikes and load times.</li>
+                        <span class="date">Ciklum Pvt. Ltd. | Jan 2024 - Jul 2024</span>
+                        <ul class="mb-0 text-muted" style="line-height: 1.8;">
+                            <li>Built commercially viable AR mobile applications utilizing AR Foundation, specifically handling plane detection, object anchoring, and scaling algorithms.</li>
+                            <li>Programmed foundational gameplay loops for 2D/3D interactive titles, including physics-based drag-and-drop systems and logic-driven puzzle mechanics.</li>
+                            <li>Designed and integrated spatial audio cues and a dynamic multi-language localization system to expand user accessibility.</li>
+                            <li>Reduced garbage collection spikes and decreased scene loading times by enforcing strict memory management and clean coding practices.</li>
                         </ul>
                     </div>
 
@@ -422,16 +244,16 @@
 
     <section id="projects">
         <div class="container">
-            <h2 class="section-title reveal-on-scroll">MISSION SELECT</h2>
+            <h2 class="section-title reveal-on-scroll">PROJECT PORTFOLIO</h2>
             <div class="row g-4">
                 
                 <div class="col-md-6 col-lg-4 reveal-on-scroll">
                     <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🧱</div>
                         <div class="project-content p-4">
-                            <h3 class="h5">Tile Stack Puzzle</h3>
-                            <p>An endless tile stacking puzzle. Engineered systems for crates, conveyor belt speeds, and precise timing mechanics.</p>
-                            <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
+                            <h3 class="h5" style="color: #fff;">Tile Stack Puzzle</h3>
+                            <p>An endless tile-stacking puzzle focusing on smooth game flow. Engineered physics logic for crate spawning, conveyor belt speeds, and precise timing mechanics.</p>
+                            <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
                         </div>
                     </div>
                 </div>
@@ -440,9 +262,9 @@
                     <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🏏</div>
                         <div class="project-content p-4">
-                            <h3 class="h5">Cricket Mania</h3>
-                            <p>Casual match-puzzle game. Features dynamic grid sorting algorithms, score multipliers, and particle FX on clearing items.</p>
-                            <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-custom btn-play w-100 text-center mt-auto">LAUNCH ON ITCH.IO</a>
+                            <h3 class="h5" style="color: #fff;">Cricket Mania</h3>
+                            <p>Casual match-puzzle game. Implemented dynamic grid sorting algorithms, state management for score multipliers, and particle FX systems.</p>
+                            <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-custom btn-play w-100 text-center mt-auto">PLAY ON ITCH.IO</a>
                         </div>
                     </div>
                 </div>
@@ -451,9 +273,9 @@
                     <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🔨</div>
                         <div class="project-content p-4">
-                            <h3 class="h5">Whack a Mole (Ed-Tech)</h3>
-                            <p>Customizable educational tool. Built an ingest system allowing parents/teachers to input custom Q&A datasets tied to mole spawns.</p>
-                            <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
+                            <h3 class="h5" style="color: #fff;">Whack a Mole (Ed-Tech)</h3>
+                            <p>Customizable educational tool. Built an ingest system utilizing ScriptableObjects to allow custom Q&A datasets tied to randomized mole spawning logic.</p>
+                            <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
                         </div>
                     </div>
                 </div>
@@ -462,9 +284,9 @@
                     <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">🕵️‍♂️</div>
                         <div class="project-content p-4">
-                            <h3 class="h5">Detective Mystery</h3>
-                            <p>Image-based deduction game. Features an inventory system, UI dialogue trees, and local storage for custom case file uploads.</p>
-                            <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
+                            <h3 class="h5" style="color: #fff;">Detective Mystery</h3>
+                            <p>Deduction game featuring an inventory system, UI-driven dialogue trees, and local storage integration for custom case file asset loading.</p>
+                            <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
                         </div>
                     </div>
                 </div>
@@ -473,9 +295,9 @@
                     <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
                         <div class="project-img">📍</div>
                         <div class="project-content p-4">
-                            <h3 class="h5">Location Spawner AR</h3>
-                            <p>Geospatial AR application. Utilizes GPS data and ARCore/ARKit to anchor virtual markers in real physical space within a 5km radius.</p>
-                            <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">RUN EXECUTABLE</a>
+                            <h3 class="h5" style="color: #fff;">Location Spawner AR</h3>
+                            <p>Geospatial AR app. Utilized GPS data combined with AR Foundation to mathematically anchor virtual markers in physical space within a 5km radius.</p>
+                            <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
                         </div>
                     </div>
                 </div>
@@ -486,56 +308,69 @@
 
     <section id="skills">
         <div class="container">
-            <h2 class="section-title reveal-on-scroll">BASE STATS</h2>
-            <div class="row g-5 mt-3">
+            <h2 class="section-title reveal-on-scroll">TECHNICAL SKILL TREE</h2>
+            <div class="row g-5 mt-2">
                 
-                <div class="col-md-4 reveal-on-scroll">
-                    <h4 class="mb-4 text-center" style="color: var(--neon-cyan);">CORE ENGINE</h4>
-                    
+                <div class="col-md-6 reveal-on-scroll skill-group">
+                    <h4 style="color: var(--neon-cyan);">CORE ENGINE & ARCHITECTURE</h4>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>Unity (2D/3D)</span> <span>LVL 95</span></div>
+                        <div class="stat-label"><span>C# & Unity Engine (2D/3D)</span> <span>Advanced</span></div>
                         <div class="stat-track"><div class="stat-fill" style="width: 95%;"></div></div>
                     </div>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>C# Scripting</span> <span>LVL 90</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                        <div class="stat-label"><span>OOP & Design Patterns</span> <span>Highly Proficient</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
                     </div>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>OOP Design Patterns</span> <span>LVL 85</span></div>
+                        <div class="stat-label"><span>ScriptableObjects & Event Systems</span> <span>Proficient</span></div>
                         <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
                     </div>
                 </div>
 
-                <div class="col-md-4 reveal-on-scroll color-pink">
-                    <h4 class="mb-4 text-center" style="color: var(--neon-pink);">EXTENDED REALITY</h4>
-                    
+                <div class="col-md-6 reveal-on-scroll skill-group color-yellow">
+                    <h4 style="color: var(--neon-yellow);">GAME AI & LOGIC</h4>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>AR Foundation</span> <span>LVL 90</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                        <div class="stat-label"><span>NavMesh & Pathfinding Logic</span> <span>Proficient</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
                     </div>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>VR Camera & Rigging</span> <span>LVL 75</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 75%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Spatial Tracking</span> <span>LVL 80</span></div>
+                        <div class="stat-label"><span>Finite State Machines (FSM)</span> <span>Proficient</span></div>
                         <div class="stat-track"><div class="stat-fill" style="width: 80%;"></div></div>
                     </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Raycasting & Sensor Detection</span> <span>Highly Proficient</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                    </div>
                 </div>
 
-                <div class="col-md-4 reveal-on-scroll color-green">
-                    <h4 class="mb-4 text-center" style="color: var(--neon-green);">NETWORK & SYSTEMS</h4>
-                    
+                <div class="col-md-6 reveal-on-scroll skill-group color-pink">
+                    <h4 style="color: var(--neon-pink);">EXTENDED REALITY (AR/VR)</h4>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>Firebase (Auth/DB)</span> <span>LVL 85</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Memory/Object Pooling</span> <span>LVL 92</span></div>
+                        <div class="stat-label"><span>AR Foundation (ARKit/ARCore)</span> <span>Advanced</span></div>
                         <div class="stat-track"><div class="stat-fill" style="width: 92%;"></div></div>
                     </div>
                     <div class="stat-bar-container">
-                        <div class="stat-label"><span>Git / Version Control</span> <span>LVL 88</span></div>
+                        <div class="stat-label"><span>Plane/Object Tracking & Anchors</span> <span>Highly Proficient</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>VR Rigging & Interaction Setup</span> <span>Capable</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 75%;"></div></div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 reveal-on-scroll skill-group color-green">
+                    <h4 style="color: var(--neon-green);">SYSTEMS, BACKEND & OPTIMIZATION</h4>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Firebase Auth & Firestore</span> <span>Proficient</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Memory Management & Object Pooling</span> <span>Advanced</span></div>
+                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="stat-bar-container">
+                        <div class="stat-label"><span>Git Version Control</span> <span>Highly Proficient</span></div>
                         <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
                     </div>
                 </div>
@@ -546,28 +381,22 @@
 
     <section id="contact" class="pb-0">
         <div class="container">
-            <div class="hud-card contact-panel reveal-on-scroll">
-                <h2 class="section-title mb-4" style="color: var(--neon-pink);">ESTABLISH COMM LINK</h2>
-                <p class="text-muted mb-5">CURRENT SERVER: Chakan, Pune, Maharashtra | STATUS: LFG (Looking for Group/Opportunities)</p>
+            <div class="hud-card text-center reveal-on-scroll" style="border-top-color: var(--neon-pink);">
+                <h2 class="section-title mb-4" style="color: var(--neon-pink); font-size: 2rem;">INITIATE CONTACT</h2>
+                <p class="text-muted mb-5">Open to full-time opportunities and collaborative projects.<br>Located in Chakan, Pune, Maharashtra.</p>
                 
-                <div class="row justify-content-center text-center">
-                    <div class="col-md-4 mb-4">
-                        <div class="contact-item">
-                            <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">[ EMAIL PROXY ]</span>
-                            <a href="mailto:sutaromkar218@gmail.com">sutaromkar218@gmail.com</a>
-                        </div>
+                <div class="row justify-content-center text-center g-4">
+                    <div class="col-md-4">
+                        <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 8px;">[ EMAIL ]</span>
+                        <a href="mailto:sutaromkar218@gmail.com" style="color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;" onmouseover="this.style.color='var(--neon-pink)'" onmouseout="this.style.color='#fff'">sutaromkar218@gmail.com</a>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="contact-item">
-                            <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">[ DIRECT FREQUENCY ]</span>
-                            <a href="tel:+919325268774">+91 9325268774</a>
-                        </div>
+                    <div class="col-md-4">
+                        <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 8px;">[ PHONE ]</span>
+                        <a href="tel:+919325268774" style="color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;" onmouseover="this.style.color='var(--neon-pink)'" onmouseout="this.style.color='#fff'">+91 9325268774</a>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="contact-item">
-                            <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.8rem; margin-bottom: 5px;">[ LINKEDIN NETWORK ]</span>
-                            <a href="https://linkedin.com/in/OmkarSutar" target="_blank">Terminal Access</a>
-                        </div>
+                    <div class="col-md-4">
+                        <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 8px;">[ LINKEDIN ]</span>
+                        <a href="https://linkedin.com/in/OmkarSutar" target="_blank" style="color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;" onmouseover="this.style.color='var(--neon-pink)'" onmouseout="this.style.color='#fff'">View Profile</a>
                     </div>
                 </div>
             </div>
@@ -576,72 +405,48 @@
 
     <footer>
         <div class="container">
-            <p class="mb-1">SYSTEM BOOT &copy; 2026 OMKAR SUTAR. ALL ASSETS SECURED.</p>
+            <p class="mb-1">&copy; 2026 OMKAR SUTAR. ALL RIGHTS RESERVED.</p>
             <p class="mb-0 text-muted">B.Tech in E&TC | Government College of Engineering, Karad</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // 1. Custom Hover/Click Cursor Logic
+            // Cursor
             const cursorDot = document.getElementById('cursorDot');
             const cursorOutline = document.getElementById('cursorOutline');
             
             window.addEventListener('mousemove', (e) => {
-                const posX = e.clientX;
-                const posY = e.clientY;
-                
-                cursorDot.style.left = `${posX - 4}px`; // Center 8px dot
-                cursorDot.style.top = `${posY - 4}px`;
-                
-                // Add slight delay to outline for cool effect
-                cursorOutline.animate({
-                    left: `${posX}px`,
-                    top: `${posY}px`
-                }, { duration: 250, fill: "forwards" });
+                const posX = e.clientX; const posY = e.clientY;
+                cursorDot.style.left = `${posX - 4}px`; cursorDot.style.top = `${posY - 4}px`;
+                cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 250, fill: "forwards" });
             });
 
-            // Make cursor react to interactive elements
-            const interactables = document.querySelectorAll('a, button, .hud-card');
-            interactables.forEach(el => {
+            document.querySelectorAll('a, button, .hud-card').forEach(el => {
                 el.addEventListener('mouseenter', () => {
-                    cursorOutline.style.width = '60px';
-                    cursorOutline.style.height = '60px';
+                    cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px';
                     cursorOutline.style.backgroundColor = 'rgba(0, 243, 255, 0.1)';
                 });
                 el.addEventListener('mouseleave', () => {
-                    cursorOutline.style.width = '40px';
-                    cursorOutline.style.height = '40px';
+                    cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px';
                     cursorOutline.style.backgroundColor = 'transparent';
                 });
             });
 
-            // 2. Scroll Animation Observer
+            // Scroll animations
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
             }, { threshold: 0.15 });
+            document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
 
-            const hiddenElements = document.querySelectorAll('.reveal-on-scroll');
-            hiddenElements.forEach((el) => observer.observe(el));
-
-            // 3. Auto-close mobile navbar on click
+            // Mobile nav close
             const navLinks = document.querySelectorAll('.nav-link');
             const menuToggle = document.getElementById('navbarNav');
             const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle: false});
-            
             navLinks.forEach((l) => {
-                l.addEventListener('click', () => {
-                    if (menuToggle.classList.contains('show')) {
-                        bsCollapse.toggle();
-                    }
-                });
+                l.addEventListener('click', () => { if (menuToggle.classList.contains('show')) bsCollapse.toggle(); });
             });
         });
     </script>
