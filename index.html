@@ -24,7 +24,6 @@
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 80px; 
         }
 
         body {
@@ -52,8 +51,11 @@
             color: var(--text-main);
         }
         
+        /* --- THE BULLETPROOF SNAP FIX --- */
         section {
-            padding: 5rem 0;
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+            scroll-margin-top: 90px; /* Forces a 90px gap above the section so the navbar doesn't cover it */
         }
 
         .section-title {
@@ -282,13 +284,8 @@
             text-align: center;
         }
 
-        .contact-box h2 {
-            color: #ffffff !important;
-        }
-        
-        .contact-box p {
-            color: #cccccc !important;
-        }
+        .contact-box h2 { color: #ffffff !important; }
+        .contact-box p { color: #cccccc !important; }
 
         .contact-link {
             text-decoration: none !important;
@@ -439,6 +436,15 @@
                         <h3 class="h5" style="color: #ffffff;">Whack a Mole (Ed-Tech)</h3>
                         <p class="project-desc">Customizable educational tool. Built an ingest system utilizing ScriptableObjects to allow custom Q&A datasets tied to randomized spawning logic.</p>
                         <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="corporate-card h-100 d-flex flex-column">
+                        <div class="project-icon">🚗</div>
+                        <h3 class="h5" style="color: #ffffff;">Car Toll (Ed-Tech)</h3>
+                        <p class="project-desc">Educational tapping game utilizing custom interaction logic. Players tap target cars to answer questions, featuring dynamic spawning patterns and score tracking.</p>
+                        <a href="https://drive.google.com/file/d/1EgO6p9pQmM4RAHa2DRnJ-xUM-elKTSTr/view?usp=drive_link" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
                 </div>
 
