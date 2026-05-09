@@ -3,187 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omkar Sutar | Unity & AR/VR Developer</title>
+    <title>Omkar Sutar | Software Engineer & XR Developer</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #050505;
-            --hud-bg: rgba(16, 20, 30, 0.85);
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff00ea;
-            --neon-green: #39ff14;
-            --neon-yellow: #ffea00;
-            --text-main: #e0e6ed;
-            --text-muted: #8b9bb4;
+            --bg-main: #0f172a;       /* Dark Slate */
+            --bg-card: #1e293b;       /* Lighter Slate */
+            --border-color: #334155;  /* Subtle Border */
+            --text-main: #f8fafc;     /* Off-White */
+            --text-muted: #94a3b8;    /* Soft Gray */
+            --accent-primary: #3b82f6; /* Corporate Blue */
+            --accent-hover: #2563eb;   /* Darker Blue */
         }
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 100px;
-            cursor: none; 
+            scroll-padding-top: 80px; /* Offset for fixed navbar */
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-main);
             color: var(--text-main);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.15rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
             overflow-x: hidden;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-attachment: fixed;
-        }
-
-        h1, h2, h3, h4, .nav-link, .btn-custom {
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-        }
-
-        /* --- Interactive Cursor --- */
-        .cursor-dot {
-            width: 8px; height: 8px; background: var(--neon-cyan); border-radius: 50%;
-            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
-            box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-            transition: transform 0.1s;
-        }
-        .cursor-outline {
-            width: 40px; height: 40px; border: 2px solid rgba(0, 243, 255, 0.5); border-radius: 50%;
-            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998;
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
-            transform: translate(-50%, -50%);
         }
 
         /* --- Animations --- */
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        .scanline-effect {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.03), transparent);
-            animation: scanline 8s linear infinite; pointer-events: none; z-index: 9000;
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .reveal-on-scroll {
-            opacity: 0; transform: translateY(30px) scale(0.98);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .reveal-on-scroll.active { opacity: 1; transform: translateY(0) scale(1); }
 
-        /* --- HUD Navbar --- */
+        /* --- Typography & Headings --- */
+        h1, h2, h3, h4, h5 {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        /* --- Navbar (Corporate & Functional) --- */
         .navbar {
-            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 2px solid var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+            background-color: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
         }
+        
         .navbar-brand {
-            color: #fff !important; font-weight: 900; letter-spacing: 2px;
-            text-shadow: 0 0 10px var(--neon-cyan);
+            font-weight: 700;
+            color: var(--text-main) !important;
+            letter-spacing: 0.5px;
         }
-        .nav-link {
-            color: var(--text-muted) !important; font-size: 0.9rem; letter-spacing: 1px;
-            position: relative; padding: 0.5rem 1rem; transition: color 0.3s;
-        }
-        .nav-link::before { content: '['; position: absolute; left: 0; opacity: 0; color: var(--neon-cyan); transition: 0.3s; transform: translateX(10px); }
-        .nav-link::after { content: ']'; position: absolute; right: 0; opacity: 0; color: var(--neon-cyan); transition: 0.3s; transform: translateX(-10px); }
-        .nav-link:hover, .nav-link.active { color: var(--neon-cyan) !important; text-shadow: 0 0 8px var(--neon-cyan); }
-        .nav-link:hover::before, .nav-link:hover::after, .nav-link.active::before, .nav-link.active::after { opacity: 1; transform: translateX(0); }
 
-        /* --- Global Layout --- */
-        section { padding: 5rem 0; }
-        .section-title {
-            color: #fff; text-align: center; margin-bottom: 3rem; font-weight: 700; letter-spacing: 3px;
-            text-shadow: 2px 2px 0px rgba(0, 243, 255, 0.3); position: relative;
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            margin-left: 1rem;
         }
-        .section-title::before, .section-title::after { content: '///'; color: var(--neon-cyan); margin: 0 15px; font-size: 1.5rem; vertical-align: middle; }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-primary) !important;
+        }
+
+        .navbar-toggler {
+            border-color: var(--border-color);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28248, 250, 252, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
 
         /* --- Buttons --- */
-        .btn-custom {
-            background: transparent; color: var(--neon-cyan); border: 1px solid var(--neon-cyan);
-            padding: 0.8rem 2rem; font-size: 0.95rem; letter-spacing: 2px; position: relative;
-            overflow: hidden; z-index: 1; transition: 0.3s; font-weight: 700;
-            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1); text-decoration: none; display: inline-block;
+        .btn-primary-custom {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
         }
-        .btn-custom::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: var(--neon-cyan); z-index: -1; transition: 0.3s;
+
+        .btn-primary-custom:hover {
+            background-color: var(--accent-hover);
+            color: #ffffff;
+            transform: translateY(-2px);
         }
-        .btn-custom:hover { color: #000; box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.02); }
-        .btn-custom:hover::before { left: 0; }
-        
-        .btn-play { border-color: var(--neon-pink); color: var(--neon-pink); }
-        .btn-play::before { background: var(--neon-pink); }
-        .btn-play:hover { color: #fff; box-shadow: 0 0 20px var(--neon-pink); }
+
+        .btn-outline-custom {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-custom:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
 
         /* --- Hero Section --- */
-        .hero { min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); color: #fff; letter-spacing: 4px; text-shadow: 3px 3px 0 var(--neon-pink), -3px -3px 0 var(--neon-cyan); margin-bottom: 1rem; }
-        .badge-dev {
-            background: rgba(0, 243, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
-            padding: 0.5rem 1.5rem; font-family: 'Orbitron'; letter-spacing: 2px; display: inline-block;
-            margin-bottom: 2rem; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); font-weight: bold;
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 80px;
         }
 
-        /* --- UI Cards --- */
-        .hud-card {
-            background: var(--hud-bg); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid var(--neon-cyan); padding: 2.5rem; margin-bottom: 2rem;
-            position: relative; transition: 0.4s ease;
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            letter-spacing: -1px;
+            margin-bottom: 1.5rem;
         }
-        .hud-card::after {
-            content: ''; position: absolute; bottom: -1px; right: -1px; width: 20px; height: 20px;
-            border-bottom: 3px solid var(--neon-cyan); border-right: 3px solid var(--neon-cyan); transition: 0.4s ease;
+
+        .role-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1.5rem;
         }
-        .hud-card:hover { transform: translateY(-5px); border-color: rgba(0, 243, 255, 0.4); box-shadow: 0 10px 30px rgba(0, 243, 255, 0.1); }
-        .hud-card:hover::after { width: 40px; height: 40px; }
-        .hud-card h3 { color: #fff; font-size: 1.6rem; letter-spacing: 1px; }
-        .hud-card .date { color: var(--neon-pink); font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 1.5rem; display: block; font-weight: bold;}
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        /* --- Professional Cards (Experience & Projects) --- */
+        .corporate-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .corporate-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: #475569;
+        }
+
+        .corporate-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .date-badge {
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .corporate-card ul {
+            color: var(--text-muted);
+            padding-left: 1.2rem;
+            margin-bottom: 0;
+        }
+
+        .corporate-card li {
+            margin-bottom: 0.5rem;
+        }
 
         /* --- Project Grid --- */
-        .project-img {
-            background: #000; height: 180px; display: flex; align-items: center; justify-content: center;
-            font-size: 4rem; border-bottom: 1px solid rgba(0, 243, 255, 0.2); position: relative; overflow: hidden;
+        .project-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
         }
-        .project-content { padding: 1.5rem 0 0 0; display: flex; flex-direction: column; height: 100%; }
-        .project-content p { color: var(--text-muted); flex-grow: 1; font-size: 1rem; line-height: 1.5; }
 
-        /* --- Skill Trees --- */
-        .stat-bar-container { margin-bottom: 1.2rem; }
-        .stat-label { display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 0.4rem; color: #fff; }
-        .stat-track { background: #111; border: 1px solid rgba(255,255,255,0.1); height: 12px; width: 100%; }
-        .stat-fill { height: 100%; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
-        
-        .color-pink .stat-fill { background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
-        .color-green .stat-fill { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
-        .color-yellow .stat-fill { background: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
+        .project-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            flex-grow: 1;
+            margin-bottom: 1.5rem;
+        }
 
-        .skill-group h4 { font-size: 1.2rem; margin-bottom: 1.5rem; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+        /* --- Skills Section --- */
+        .skill-category {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: 100%;
+        }
 
-        footer { background: #000; border-top: 1px solid #222; text-align: center; padding: 2rem 0; font-family: 'Orbitron'; font-size: 0.8rem; color: var(--text-muted); }
+        .skill-category h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
 
+        .skill-pill {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin: 0.25rem;
+        }
+
+        /* --- Contact Section --- */
+        .contact-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .contact-link {
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .contact-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--accent-primary);
+        }
+
+        .contact-link span {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body data-bs-spy="scroll" data-bs-target="#main-nav" data-bs-smooth-scroll="true" tabindex="0">
 
-    <div class="scanline-effect"></div>
-    <div class="cursor-dot" id="cursorDot"></div>
-    <div class="cursor-outline" id="cursorOutline"></div>
-
     <nav id="main-nav" class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#about">OMKAR_SUTAR</a>
-            <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="#about">Omkar Sutar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto gap-lg-3">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#about">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
                     <li class="nav-item"><a class="nav-link" href="#projects">Portfolio</a></li>
@@ -195,43 +330,54 @@
     </nav>
 
     <section class="hero" id="about">
-        <div class="container reveal-on-scroll">
-            <h1>OMKAR SUTAR</h1>
-            <div class="badge-dev">SOFTWARE ENGINEER | UNITY & AR/VR</div>
-            <p class="mx-auto mb-5" style="max-width: 800px; color: var(--text-muted); line-height: 1.7;">
-                Detail-oriented Game Developer specializing in scalable architecture, interactive XR systems, and Game AI. Proficient in C# and the Unity Engine, with a strong focus on Object-Oriented Programming (OOP), performance optimization, and implementing robust backend solutions for cross-platform mobile applications.
+        <div class="container fade-in-up">
+            <div class="role-badge">Software Engineer | Unity & AR/VR Developer</div>
+            <h1>Omkar Sutar</h1>
+            <p>
+                Detail-oriented Software Developer specializing in scalable architecture, interactive Extended Reality (XR) systems, and Game AI. Proficient in C# and the Unity Engine, with a strong focus on Object-Oriented Programming (OOP), performance optimization, and robust backend integrations for cross-platform mobile applications.
             </p>
-            <div class="d-flex justify-content-center gap-4 flex-wrap">
-                <a href="#projects" class="btn-custom">VIEW PORTFOLIO</a>
-                <a href="#contact" class="btn-custom btn-play">GET IN TOUCH</a>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#projects" class="btn-primary-custom">View Portfolio</a>
+                <a href="#contact" class="btn-outline-custom">Contact Me</a>
             </div>
         </div>
     </section>
 
     <section id="experience">
         <div class="container">
-            <h2 class="section-title reveal-on-scroll">PROFESSIONAL EXPERIENCE</h2>
+            <h2 class="section-title fade-in-up">Professional Experience</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     
-                    <div class="hud-card reveal-on-scroll">
+                    <div class="corporate-card fade-in-up">
                         <h3>Unity Game Developer</h3>
-                        <span class="date">Midknight Studio Pvt. Ltd. | Feb 2025 - Present</span>
-                        <ul class="mb-0 text-muted" style="line-height: 1.8;">
-                            <li>Architected and deployed interactive AR and 2D/3D Unity applications, emphasizing reusable code and modular game systems.</li>
-                            <li>Engineered advanced Game AI components, including pathfinding and state-driven behavior logic for dynamic NPC interactions.</li>
-                            <li>Integrated Firebase backend infrastructure to manage secure user authentication, real-time database progress tracking, and live achievements.</li>
-                            <li>Optimized rendering pipelines and implemented object pooling to sustain high framerates and reduce CPU/GPU overhead on mobile devices.</li>
+                        <span class="date-badge">Midknight Studio Pvt. Ltd. | Feb 2025 - Present</span>
+                        <ul>
+                            <li>Architected and deployed interactive AR and 2D/3D Unity applications, emphasizing modular code and reusable game systems.</li>
+                            <li>Engineered Game AI components, including pathfinding and state-driven behavior logic for dynamic interactions.</li>
+                            <li>Integrated Firebase backend infrastructure to manage secure user authentication, database progress tracking, and live achievements.</li>
+                            <li>Optimized rendering pipelines and implemented object pooling to sustain high framerates and reduce CPU overhead on mobile devices.</li>
                             <li>Established core VR foundations including camera rigging, spatial tracking, and physics-based interactions.</li>
                         </ul>
                     </div>
 
-                    <div class="hud-card reveal-on-scroll">
+                    <div class="corporate-card fade-in-up">
+                        <h3>Freelance Game Developer (Educational XR/3D)</h3>
+                        <span class="date-badge">Self-Employed | Aug 2024 - Jan 2025</span>
+                        <ul>
+                            <li>Developed and delivered interactive educational games utilizing Unity 2D and 3D, focused on enhancing student engagement and learning retention.</li>
+                            <li>Prototyped augmented reality (AR) learning modules using AR Foundation, allowing users to visualize and interact with educational models in physical space.</li>
+                            <li>Collaborated directly with clients to define technical requirements, scope project timelines, and deliver optimized applications for mobile platforms.</li>
+                            <li>Implemented custom UI/UX flows tailored specifically for younger demographics and accessibility.</li>
+                        </ul>
+                    </div>
+
+                    <div class="corporate-card fade-in-up">
                         <h3>Unity Developer Intern</h3>
-                        <span class="date">Ciklum Pvt. Ltd. | Jan 2024 - Jul 2024</span>
-                        <ul class="mb-0 text-muted" style="line-height: 1.8;">
-                            <li>Built commercially viable AR mobile applications utilizing AR Foundation, specifically handling plane detection, object anchoring, and scaling algorithms.</li>
-                            <li>Programmed foundational gameplay loops for 2D/3D interactive titles, including physics-based drag-and-drop systems and logic-driven puzzle mechanics.</li>
+                        <span class="date-badge">Ciklum Pvt. Ltd. | Jan 2024 - Jul 2024</span>
+                        <ul>
+                            <li>Built commercially viable AR mobile applications utilizing AR Foundation, handling plane detection, object anchoring, and scaling algorithms.</li>
+                            <li>Programmed foundational gameplay loops for interactive titles, including physics-based drag-and-drop systems and logic-driven puzzle mechanics.</li>
                             <li>Designed and integrated spatial audio cues and a dynamic multi-language localization system to expand user accessibility.</li>
                             <li>Reduced garbage collection spikes and decreased scene loading times by enforcing strict memory management and clean coding practices.</li>
                         </ul>
@@ -244,61 +390,51 @@
 
     <section id="projects">
         <div class="container">
-            <h2 class="section-title reveal-on-scroll">PROJECT PORTFOLIO</h2>
+            <h2 class="section-title fade-in-up">Project Portfolio</h2>
             <div class="row g-4">
                 
-                <div class="col-md-6 col-lg-4 reveal-on-scroll">
-                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
-                        <div class="project-img">🧱</div>
-                        <div class="project-content p-4">
-                            <h3 class="h5" style="color: #fff;">Tile Stack Puzzle</h3>
-                            <p>An endless tile-stacking puzzle focusing on smooth game flow. Engineered physics logic for crate spawning, conveyor belt speeds, and precise timing mechanics.</p>
-                            <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
-                        </div>
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="corporate-card h-100 d-flex flex-column">
+                        <div class="project-icon">🧱</div>
+                        <h3 class="h5">Tile Stack Puzzle</h3>
+                        <p class="project-desc">An endless tile-stacking puzzle focusing on smooth game flow. Engineered physics logic for crate spawning, conveyor belt speeds, and precise timing mechanics.</p>
+                        <a href="https://drive.google.com/file/d/1RufrP0vRbEGMIIwL2VlIRM1FYRa6EAYF/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4 reveal-on-scroll">
-                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
-                        <div class="project-img">🏏</div>
-                        <div class="project-content p-4">
-                            <h3 class="h5" style="color: #fff;">Cricket Mania</h3>
-                            <p>Casual match-puzzle game. Implemented dynamic grid sorting algorithms, state management for score multipliers, and particle FX systems.</p>
-                            <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-custom btn-play w-100 text-center mt-auto">PLAY ON ITCH.IO</a>
-                        </div>
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="corporate-card h-100 d-flex flex-column">
+                        <div class="project-icon">🏏</div>
+                        <h3 class="h5">Cricket Mania</h3>
+                        <p class="project-desc">Casual match-puzzle game. Implemented dynamic grid sorting algorithms, state management for score multipliers, and particle FX systems.</p>
+                        <a href="https://omkar8774.itch.io/cricket-mania" target="_blank" class="btn-primary-custom w-100 text-center mt-auto">Play on Itch.io</a>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4 reveal-on-scroll">
-                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
-                        <div class="project-img">🔨</div>
-                        <div class="project-content p-4">
-                            <h3 class="h5" style="color: #fff;">Whack a Mole (Ed-Tech)</h3>
-                            <p>Customizable educational tool. Built an ingest system utilizing ScriptableObjects to allow custom Q&A datasets tied to randomized mole spawning logic.</p>
-                            <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
-                        </div>
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="corporate-card h-100 d-flex flex-column">
+                        <div class="project-icon">🔨</div>
+                        <h3 class="h5">Whack a Mole (Ed-Tech)</h3>
+                        <p class="project-desc">Customizable educational tool. Built an ingest system utilizing ScriptableObjects to allow custom Q&A datasets tied to randomized spawning logic.</p>
+                        <a href="https://drive.google.com/file/d/1SYwLO6fGFzfHdTQDPsmz2f2wRAVeQbMi/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4 reveal-on-scroll">
-                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
-                        <div class="project-img">🕵️‍♂️</div>
-                        <div class="project-content p-4">
-                            <h3 class="h5" style="color: #fff;">Detective Mystery</h3>
-                            <p>Deduction game featuring an inventory system, UI-driven dialogue trees, and local storage integration for custom case file asset loading.</p>
-                            <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
-                        </div>
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="corporate-card h-100 d-flex flex-column">
+                        <div class="project-icon">🕵️‍♂️</div>
+                        <h3 class="h5">Detective Mystery</h3>
+                        <p class="project-desc">Deduction game featuring an inventory system, UI-driven dialogue trees, and local storage integration for custom case file asset loading.</p>
+                        <a href="https://drive.google.com/file/d/1hZ_PKM57g7TM-LC38KYW0YbB9jDmgW7J/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-4 reveal-on-scroll">
-                    <div class="hud-card h-100 d-flex flex-column" style="padding: 0;">
-                        <div class="project-img">📍</div>
-                        <div class="project-content p-4">
-                            <h3 class="h5" style="color: #fff;">Location Spawner AR</h3>
-                            <p>Geospatial AR app. Utilized GPS data combined with AR Foundation to mathematically anchor virtual markers in physical space within a 5km radius.</p>
-                            <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-custom w-100 text-center mt-auto">VIEW APK</a>
-                        </div>
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="corporate-card h-100 d-flex flex-column">
+                        <div class="project-icon">📍</div>
+                        <h3 class="h5">Location Spawner AR</h3>
+                        <p class="project-desc">Geospatial AR app. Utilized GPS data combined with AR Foundation to mathematically anchor virtual markers in physical space within a 5km radius.</p>
+                        <a href="https://drive.google.com/file/d/1cYKwssc2BEHZGoMGXd9U028uge8AeXYM/view?usp=drivesdk" target="_blank" class="btn-outline-custom w-100 text-center mt-auto">View Application</a>
                     </div>
                 </div>
 
@@ -308,70 +444,50 @@
 
     <section id="skills">
         <div class="container">
-            <h2 class="section-title reveal-on-scroll">TECHNICAL SKILL TREE</h2>
-            <div class="row g-5 mt-2">
+            <h2 class="section-title fade-in-up">Technical Skills</h2>
+            <div class="row g-4">
                 
-                <div class="col-md-6 reveal-on-scroll skill-group">
-                    <h4 style="color: var(--neon-cyan);">CORE ENGINE & ARCHITECTURE</h4>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>C# & Unity Engine (2D/3D)</span> <span>Advanced</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 95%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>OOP & Design Patterns</span> <span>Highly Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>ScriptableObjects & Event Systems</span> <span>Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
+                <div class="col-md-6 col-lg-3 fade-in-up">
+                    <div class="skill-category">
+                        <h4>Core Engineering</h4>
+                        <span class="skill-pill">C#</span>
+                        <span class="skill-pill">Unity 2D/3D</span>
+                        <span class="skill-pill">OOP Architecture</span>
+                        <span class="skill-pill">Design Patterns</span>
+                        <span class="skill-pill">ScriptableObjects</span>
                     </div>
                 </div>
 
-                <div class="col-md-6 reveal-on-scroll skill-group color-yellow">
-                    <h4 style="color: var(--neon-yellow);">GAME AI & LOGIC</h4>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>NavMesh & Pathfinding Logic</span> <span>Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Finite State Machines (FSM)</span> <span>Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 80%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Raycasting & Sensor Detection</span> <span>Highly Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
+                <div class="col-md-6 col-lg-3 fade-in-up">
+                    <div class="skill-category">
+                        <h4>Game AI & Logic</h4>
+                        <span class="skill-pill">NavMesh Pathfinding</span>
+                        <span class="skill-pill">Finite State Machines</span>
+                        <span class="skill-pill">Raycasting</span>
+                        <span class="skill-pill">Physics/Collisions</span>
+                        <span class="skill-pill">Event Systems</span>
                     </div>
                 </div>
 
-                <div class="col-md-6 reveal-on-scroll skill-group color-pink">
-                    <h4 style="color: var(--neon-pink);">EXTENDED REALITY (AR/VR)</h4>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>AR Foundation (ARKit/ARCore)</span> <span>Advanced</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 92%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Plane/Object Tracking & Anchors</span> <span>Highly Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>VR Rigging & Interaction Setup</span> <span>Capable</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 75%;"></div></div>
+                <div class="col-md-6 col-lg-3 fade-in-up">
+                    <div class="skill-category">
+                        <h4>Extended Reality (XR)</h4>
+                        <span class="skill-pill">AR Foundation</span>
+                        <span class="skill-pill">ARKit / ARCore</span>
+                        <span class="skill-pill">Plane Tracking</span>
+                        <span class="skill-pill">Object Anchoring</span>
+                        <span class="skill-pill">VR Camera Rigging</span>
                     </div>
                 </div>
 
-                <div class="col-md-6 reveal-on-scroll skill-group color-green">
-                    <h4 style="color: var(--neon-green);">SYSTEMS, BACKEND & OPTIMIZATION</h4>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Firebase Auth & Firestore</span> <span>Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 85%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Memory Management & Object Pooling</span> <span>Advanced</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 90%;"></div></div>
-                    </div>
-                    <div class="stat-bar-container">
-                        <div class="stat-label"><span>Git Version Control</span> <span>Highly Proficient</span></div>
-                        <div class="stat-track"><div class="stat-fill" style="width: 88%;"></div></div>
+                <div class="col-md-6 col-lg-3 fade-in-up">
+                    <div class="skill-category">
+                        <h4>Backend & Optimization</h4>
+                        <span class="skill-pill">Firebase Auth/DB</span>
+                        <span class="skill-pill">Object Pooling</span>
+                        <span class="skill-pill">Memory Management</span>
+                        <span class="skill-pill">Git / GitHub</span>
+                        <span class="skill-pill">Android Build Pipeline</span>
                     </div>
                 </div>
 
@@ -379,24 +495,30 @@
         </div>
     </section>
 
-    <section id="contact" class="pb-0">
-        <div class="container">
-            <div class="hud-card text-center reveal-on-scroll" style="border-top-color: var(--neon-pink);">
-                <h2 class="section-title mb-4" style="color: var(--neon-pink); font-size: 2rem;">INITIATE CONTACT</h2>
-                <p class="text-muted mb-5">Open to full-time opportunities and collaborative projects.<br>Located in Chakan, Pune, Maharashtra.</p>
+    <section id="contact">
+        <div class="container fade-in-up">
+            <div class="contact-box">
+                <h2 class="mb-3">Let's Build Something Great</h2>
+                <p class="text-muted mb-5">Open to full-time opportunities and collaborative tech projects.<br>Based in Chakan, Pune, Maharashtra.</p>
                 
-                <div class="row justify-content-center text-center g-4">
+                <div class="row justify-content-center g-4">
                     <div class="col-md-4">
-                        <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 8px;">[ EMAIL ]</span>
-                        <a href="mailto:sutaromkar218@gmail.com" style="color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;" onmouseover="this.style.color='var(--neon-pink)'" onmouseout="this.style.color='#fff'">sutaromkar218@gmail.com</a>
+                        <a href="mailto:sutaromkar218@gmail.com" class="contact-link">
+                            <span>Email</span>
+                            <div class="fs-5">sutaromkar218@gmail.com</div>
+                        </a>
                     </div>
                     <div class="col-md-4">
-                        <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 8px;">[ PHONE ]</span>
-                        <a href="tel:+919325268774" style="color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;" onmouseover="this.style.color='var(--neon-pink)'" onmouseout="this.style.color='#fff'">+91 9325268774</a>
+                        <a href="tel:+919325268774" class="contact-link">
+                            <span>Phone</span>
+                            <div class="fs-5">+91 9325268774</div>
+                        </a>
                     </div>
                     <div class="col-md-4">
-                        <span style="color: var(--neon-cyan); display: block; font-family: 'Orbitron'; font-size: 0.85rem; margin-bottom: 8px;">[ LINKEDIN ]</span>
-                        <a href="https://linkedin.com/in/OmkarSutar" target="_blank" style="color: #fff; text-decoration: none; font-size: 1.2rem; transition: 0.3s;" onmouseover="this.style.color='var(--neon-pink)'" onmouseout="this.style.color='#fff'">View Profile</a>
+                        <a href="https://linkedin.com/in/OmkarSutar" target="_blank" class="contact-link">
+                            <span>LinkedIn</span>
+                            <div class="fs-5">View Profile</div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -405,48 +527,37 @@
 
     <footer>
         <div class="container">
-            <p class="mb-1">&copy; 2026 OMKAR SUTAR. ALL RIGHTS RESERVED.</p>
-            <p class="mb-0 text-muted">B.Tech in E&TC | Government College of Engineering, Karad</p>
+            <p class="mb-1">&copy; 2026 Omkar Sutar. All rights reserved.</p>
+            <p class="mb-0">B.Tech in Electronics & Telecommunication Engineering | Government College of Engineering, Karad</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // Cursor
-            const cursorDot = document.getElementById('cursorDot');
-            const cursorOutline = document.getElementById('cursorOutline');
-            
-            window.addEventListener('mousemove', (e) => {
-                const posX = e.clientX; const posY = e.clientY;
-                cursorDot.style.left = `${posX - 4}px`; cursorDot.style.top = `${posY - 4}px`;
-                cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 250, fill: "forwards" });
-            });
-
-            document.querySelectorAll('a, button, .hud-card').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px';
-                    cursorOutline.style.backgroundColor = 'rgba(0, 243, 255, 0.1)';
-                });
-                el.addEventListener('mouseleave', () => {
-                    cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px';
-                    cursorOutline.style.backgroundColor = 'transparent';
-                });
-            });
-
-            // Scroll animations
+            // Scroll fade-in animations
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-            }, { threshold: 0.15 });
-            document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
 
-            // Mobile nav close
+            document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
+
+            // Ensure mobile navbar closes when a link is clicked
             const navLinks = document.querySelectorAll('.nav-link');
             const menuToggle = document.getElementById('navbarNav');
-            const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle: false});
+            const bsCollapse = new bootstrap.Collapse(menuToggle, { toggle: false });
+            
             navLinks.forEach((l) => {
-                l.addEventListener('click', () => { if (menuToggle.classList.contains('show')) bsCollapse.toggle(); });
+                l.addEventListener('click', () => {
+                    if (menuToggle.classList.contains('show')) {
+                        bsCollapse.toggle();
+                    }
+                });
             });
         });
     </script>
