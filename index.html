@@ -77,13 +77,13 @@
             border-radius: 2px;
         }
 
-        /* --- Navbar (FIXED: Increased z-index to ensure interactivity) --- */
+        /* --- Navbar --- */
         .navbar {
             background-color: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
-            z-index: 1050 !important; /* Forces navbar to stay above everything */
+            z-index: 1050 !important; 
         }
         
         .navbar-brand {
@@ -114,7 +114,7 @@
         /* --- Buttons --- */
         .btn-primary-custom {
             background-color: var(--accent-primary);
-            color: #ffffff;
+            color: #ffffff !important;
             border: none;
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
@@ -126,13 +126,12 @@
 
         .btn-primary-custom:hover {
             background-color: var(--accent-hover);
-            color: #ffffff;
             transform: translateY(-2px);
         }
 
         .btn-outline-custom {
             background-color: transparent;
-            color: #ffffff;
+            color: #ffffff !important;
             border: 1px solid var(--border-color);
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
@@ -144,7 +143,7 @@
 
         .btn-outline-custom:hover {
             border-color: var(--accent-primary);
-            color: var(--accent-primary);
+            color: var(--accent-primary) !important;
         }
 
         /* --- Hero Section --- */
@@ -190,8 +189,6 @@
             padding: 2rem;
             margin-bottom: 1.5rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            z-index: 1;
         }
 
         .corporate-card:hover {
@@ -271,7 +268,7 @@
             margin: 0.25rem;
         }
 
-        /* --- Contact Section (FIXED: Enforced hard white text) --- */
+        /* --- Contact Section --- */
         .contact-box {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -281,11 +278,15 @@
         }
 
         .contact-box h2 {
-            color: #ffffff;
+            color: #ffffff !important;
+        }
+        
+        .contact-box p {
+            color: #cccccc !important;
         }
 
         .contact-link {
-            text-decoration: none;
+            text-decoration: none !important;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -299,20 +300,20 @@
         }
 
         .contact-link span {
-            color: var(--text-muted);
+            color: #a0aec0 !important;
             font-size: 0.875rem;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .contact-link div.fs-5 {
-            color: #ffffff !important; /* Forces the main contact text to be bright white */
+        .contact-link div {
+            color: #ffffff !important; 
             font-weight: 600;
             transition: color 0.2s ease;
         }
 
-        .contact-link:hover div.fs-5 {
+        .contact-link:hover div {
             color: var(--accent-primary) !important;
         }
 
@@ -350,7 +351,7 @@
             <div class="role-badge">Software Engineer | Unity & AR/VR Developer</div>
             <h1>Omkar Sutar</h1>
             <p>
-                Detail-oriented Software Developer specializing in scalable architecture, interactive Extended Reality (XR) systems, and Game AI. Proficient in C# and the Unity Engine, with a strong focus on Object-Oriented Programming (OOP), performance optimization, and robust backend integrations for cross-platform mobile applications.
+                Detail-oriented Software Developer specializing in scalable architecture, interactive Extended Reality (XR) systems, and Game AI. Proficient in C# and the Unity Engine, with a strong focus on Object-Oriented Programming (OOP), AI-assisted development workflows, and robust backend integrations for cross-platform mobile applications.
             </p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a href="#projects" class="btn-primary-custom">View Portfolio</a>
@@ -463,10 +464,10 @@
             <h2 class="section-title fade-in-up">Technical Skills</h2>
             <div class="row g-4">
                 
-                <div class="col-md-6 col-lg-3 fade-in-up">
+                <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="skill-category">
                         <h4>Core Engineering</h4>
-                        <span class="skill-pill">C#</span>
+                        <span class="skill-pill">C# Scripting</span>
                         <span class="skill-pill">Unity 2D/3D</span>
                         <span class="skill-pill">OOP Architecture</span>
                         <span class="skill-pill">Design Patterns</span>
@@ -474,18 +475,18 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-3 fade-in-up">
+                <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="skill-category">
                         <h4>Game AI & Logic</h4>
                         <span class="skill-pill">NavMesh Pathfinding</span>
                         <span class="skill-pill">Finite State Machines</span>
+                        <span class="skill-pill">NPC Behavior Logic</span>
                         <span class="skill-pill">Raycasting</span>
-                        <span class="skill-pill">Physics/Collisions</span>
                         <span class="skill-pill">Event Systems</span>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-3 fade-in-up">
+                <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="skill-category">
                         <h4>Extended Reality (XR)</h4>
                         <span class="skill-pill">AR Foundation</span>
@@ -496,14 +497,36 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-3 fade-in-up">
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="skill-category" style="border-left: 3px solid var(--accent-primary);">
+                        <h4>Generative AI Tools</h4>
+                        <span class="skill-pill">GitHub Copilot</span>
+                        <span class="skill-pill">ChatGPT / Claude AI</span>
+                        <span class="skill-pill">Prompt Engineering</span>
+                        <span class="skill-pill">AI-Assisted Debugging</span>
+                        <span class="skill-pill">AI Asset Generation</span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 fade-in-up">
                     <div class="skill-category">
-                        <h4>Backend & Optimization</h4>
-                        <span class="skill-pill">Firebase Auth/DB</span>
-                        <span class="skill-pill">Object Pooling</span>
-                        <span class="skill-pill">Memory Management</span>
+                        <h4>Backend & Cloud</h4>
+                        <span class="skill-pill">Firebase Authentication</span>
+                        <span class="skill-pill">Firestore Database</span>
+                        <span class="skill-pill">Cloud Storage</span>
+                        <span class="skill-pill">Data Analytics</span>
+                        <span class="skill-pill">Leaderboards API</span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 fade-in-up">
+                    <div class="skill-category">
+                        <h4>Development Workflows</h4>
                         <span class="skill-pill">Git / GitHub</span>
+                        <span class="skill-pill">Object Pooling</span>
+                        <span class="skill-pill">Memory Profiling</span>
                         <span class="skill-pill">Android Build Pipeline</span>
+                        <span class="skill-pill">Agile Development</span>
                     </div>
                 </div>
 
@@ -515,7 +538,7 @@
         <div class="container fade-in-up">
             <div class="contact-box">
                 <h2 class="mb-3">Let's Build Something Great</h2>
-                <p class="text-muted mb-5">Open to full-time opportunities and collaborative tech projects.<br>Based in Chakan, Pune, Maharashtra.</p>
+                <p class="mb-5">Open to full-time opportunities and collaborative tech projects.<br>Based in Chakan, Pune, Maharashtra.</p>
                 
                 <div class="row justify-content-center g-4">
                     <div class="col-md-4">
@@ -543,7 +566,7 @@
 
     <footer>
         <div class="container">
-            <p class="mb-1">&copy; 2026 Omkar Sutar. All rights reserved.</p>
+            <p class="mb-1" style="color: #ffffff;">&copy; 2026 Omkar Sutar. All rights reserved.</p>
             <p class="mb-0">B.Tech in Electronics & Telecommunication Engineering | Government College of Engineering, Karad</p>
         </div>
     </footer>
@@ -552,7 +575,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // FIXED: Lowered threshold from 0.1 to 0.05 so the contact section always triggers even on small screens
+            // Scroll animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -563,16 +586,26 @@
 
             document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
 
+            // Navbar elements
             const navLinks = document.querySelectorAll('.nav-link');
             const menuToggle = document.getElementById('navbarNav');
-            const bsCollapse = new bootstrap.Collapse(menuToggle, { toggle: false });
             
+            // 1. Close menu when a link is clicked
             navLinks.forEach((l) => {
                 l.addEventListener('click', () => {
                     if (menuToggle.classList.contains('show')) {
-                        bsCollapse.toggle();
+                        const bsCollapse = bootstrap.Collapse.getInstance(menuToggle) || new bootstrap.Collapse(menuToggle);
+                        bsCollapse.hide();
                     }
                 });
+            });
+
+            // 2. Close menu when the user scrolls (drags down/up)
+            window.addEventListener('scroll', () => {
+                if (menuToggle.classList.contains('show')) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(menuToggle) || new bootstrap.Collapse(menuToggle);
+                    bsCollapse.hide();
+                }
             });
         });
     </script>
