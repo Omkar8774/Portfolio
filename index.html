@@ -596,7 +596,7 @@
 
             document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
 
-            // 2. Mobile Menu Fix (Native Click Method)
+            // 2. Mobile Menu Fix (Native Click Method & Scroll Down Check)
             const togglerBtn = document.querySelector('.navbar-toggler');
             const collapseMenu = document.getElementById('navbarNav');
             const navLinks = document.querySelectorAll('.nav-link');
@@ -607,17 +607,27 @@
                 }
             };
 
+            // Close when clicking a link
             navLinks.forEach(link => {
                 link.addEventListener('click', closeMenuNatively);
             });
 
-            let scrollTimer;
+            // Tracking scroll direction to only close on DOWNWARD scroll
+            let lastScrollTop = 0;
+            
             window.addEventListener('scroll', () => {
-                clearTimeout(scrollTimer);
-                scrollTimer = setTimeout(() => {
-                    closeMenuNatively();
-                }, 100);
-            });
+                let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // Only close the menu if scrolling DOWN
+                if (currentScroll > lastScrollTop) {
+                    if (collapseMenu.classList.contains('show')) {
+                        togglerBtn.click();
+                    }
+                }
+                
+                // Update the last scroll position (preventing negative values on mobile "bounce" scroll)
+                lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+            }, false);
         });
     </script>
 </body>
